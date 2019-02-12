@@ -7,14 +7,22 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.andersen.internship.testproject.R;
 
+import java.util.concurrent.TimeUnit;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
 
 public class SlideshowFragment extends AbstractFragment {
 
-
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
 
     public SlideshowFragment() {
         setIdTitle(R.string.slideshow);
@@ -23,7 +31,6 @@ public class SlideshowFragment extends AbstractFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("myLogs", "onCreate");
     }
 
     @Nullable
@@ -33,7 +40,6 @@ public class SlideshowFragment extends AbstractFragment {
         setRetainInstance(true);
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_slideshow, container, false);
         unbinder = ButterKnife.bind(this, rootView);
-        Log.d("myLogs", "onCreateView");
 
         return rootView;
     }
@@ -42,6 +48,15 @@ public class SlideshowFragment extends AbstractFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        Flowable.interval(50, TimeUnit.MILLISECONDS)
+                .take(100)
+                .map(aLong -> {
+                    int i = aLong.intValue();
+                    return ++i;
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(i -> progressBar.setProgress(i));
     }
 
 
