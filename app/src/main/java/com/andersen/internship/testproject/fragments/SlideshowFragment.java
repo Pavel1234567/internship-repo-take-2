@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -25,7 +26,10 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SlideshowFragment extends AbstractFragment implements com.andersen.internship.testproject.mvp.View{
+import static com.andersen.internship.testproject.fragments.SlideshowFragment.LayoutManagerTypes.GRID;
+import static com.andersen.internship.testproject.fragments.SlideshowFragment.LayoutManagerTypes.LINEAR;
+
+public class SlideshowFragment extends AbstractFragment implements com.andersen.internship.testproject.mvp.View {
 
     @BindView(R.id.new_posts)
     Button newPosts;
@@ -39,11 +43,19 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
 
+    @BindView(R.id.linear)
+    Button selectLinear;
+
+    @BindView(R.id.grid)
+    Button selectGrid;
+
     private GridImagesAdapter adapter;
 
     private Presenter presenter;
 
     private IMAGES_TYPES imagesTypes = IMAGES_TYPES.NEW;
+
+    private LayoutManagerTypes layoutManagerType;
 
 
     public SlideshowFragment() {
@@ -54,6 +66,7 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.d("myLogs", "onCreate");
+        layoutManagerType = GRID;
     }
 
     @Nullable
@@ -78,7 +91,7 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
 
     }
 
-    private void setOnClickListeners(){
+    private void setOnClickListeners() {
         topPosts.setOnClickListener(view -> {
             presenter.loadImages(IMAGES_TYPES.TOP);
             imagesTypes = IMAGES_TYPES.TOP;
@@ -89,17 +102,20 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
             imagesTypes = IMAGES_TYPES.NEW;
 
         });
+
+        selectGrid.setOnClickListener(view -> setGridLayoutManager());
+
+        selectLinear.setOnClickListener(view -> setLinearLayoutManager());
     }
 
-    private void initPresenter(){
-        presenter = new GridImagesPresenter(this);
-        getLifecycle().addObserver(presenter);
-        presenter.loadImages(imagesTypes);
+    private void setLinearLayoutManager() {
+        LinearLayoutManager layout = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layout);
 
+        layoutManagerType = LINEAR;
     }
 
-    private void recyclerViewInit(){
-
+    private void setGridLayoutManager() {
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -109,6 +125,31 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
         });
 
         recyclerView.setLayoutManager(layoutManager);
+
+        layoutManagerType = GRID;
+    }
+
+
+    private void initPresenter() {
+        presenter = new GridImagesPresenter(this);
+        getLifecycle().addObserver(presenter);
+        presenter.loadImages(imagesTypes);
+
+    }
+
+    private void recyclerViewInit() {
+
+        Log.d("myLog", layoutManagerType.name());
+        switch (layoutManagerType) {
+
+            case GRID:
+                setGridLayoutManager();
+                break;
+
+            case LINEAR:
+                setLinearLayoutManager();
+                break;
+        }
 
         adapter = new GridImagesAdapter();
         recyclerView.setAdapter(adapter);
@@ -141,6 +182,9 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
         progressBar.setProgress(value);
     }
 
-
-
+    enum LayoutManagerTypes {
+        
+        LINEAR,
+        GRID
+    }
 }
