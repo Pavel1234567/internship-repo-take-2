@@ -30,10 +30,19 @@ public class GridImagesPresenter implements Presenter {
     private Model model;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
+    private Flowable<Integer> progressImitation;
+
     public GridImagesPresenter(View view) {
         this.view = view;
         model = getModel();
 
+        progressImitation = Flowable
+                .interval(50, TimeUnit.MILLISECONDS)
+                .take(100)
+                .map(aLong -> {
+                    int i = aLong.intValue();
+                    return ++i;
+                });
     }
 
     @Override
@@ -65,7 +74,21 @@ public class GridImagesPresenter implements Presenter {
                             view.showError(e.getMessage());
                         },
 
-                        () -> view.hideProgress());
+                        () -> {
+                            Disposable progressImitationDisposable = progressImitation
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribe(
+                                            i -> view.setProgress(i),
+                                            e -> {
+                                                view.showError(e.getMessage());
+                                                view.hideProgress();
+                                            },
+                                            () -> view.hideProgress()
+                                    );
+
+                            compositeDisposable.add(progressImitationDisposable);
+                        });
 
         compositeDisposable.add(disposable);
     }

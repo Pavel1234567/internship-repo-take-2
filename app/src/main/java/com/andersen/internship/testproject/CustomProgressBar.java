@@ -7,6 +7,7 @@ import android.util.AttributeSet;
 import android.widget.ProgressBar;
 
 public class CustomProgressBar extends ProgressBar {
+
     public CustomProgressBar(Context context) {
         super(context);
     }
