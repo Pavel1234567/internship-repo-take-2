@@ -45,8 +45,6 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
 
     private IMAGES_TYPES imagesTypes = IMAGES_TYPES.NEW;
 
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
-
     public SlideshowFragment() {
         setIdTitle(R.string.slideshow);
     }

@@ -4,9 +4,17 @@ import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.ProgressBar;
 
+import static android.graphics.Color.BLUE;
+import static android.graphics.Color.GREEN;
+import static android.graphics.Color.RED;
+import static android.graphics.Color.YELLOW;
+
 public class CustomProgressBar extends ProgressBar {
+
+    private int currentColor;
 
     public CustomProgressBar(Context context) {
         super(context);
@@ -24,18 +32,16 @@ public class CustomProgressBar extends ProgressBar {
     public synchronized void setProgress(int progress) {
         super.setProgress(progress);
 
-        if (progress <= 10){
-            setColor(Color.YELLOW);
+        if (setColorConditional(progress, 0, 10, YELLOW)){
+            setColor(YELLOW);
 
-        } else if(progress <= 30){
+        } else if(setColorConditional(progress, 10, 30, RED)){
             setColor(Color.RED);
-
-
-        }else if(progress <= 70){
+            
+        }else if(setColorConditional(progress, 30, 70, BLUE)){
             setColor(Color.BLUE);
 
-
-        }else if(progress <= 100){
+        }else if(setColorConditional(progress, 70, 100, GREEN)){
             setColor(Color.GREEN);
 
         }
@@ -47,5 +53,11 @@ public class CustomProgressBar extends ProgressBar {
         progressDrawable.setColorFilter(color, android.graphics.PorterDuff.Mode.SRC_IN);
         setProgressDrawable(progressDrawable);
 
+        currentColor = color;
+
+    }
+
+    private boolean setColorConditional(int progress, int start, int finish, int color){
+        return progress >= start && progress < finish && color != currentColor;
     }
 }
