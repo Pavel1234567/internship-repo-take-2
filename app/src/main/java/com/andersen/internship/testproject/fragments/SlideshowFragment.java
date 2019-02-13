@@ -3,17 +3,47 @@ package com.andersen.internship.testproject.fragments;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
+import com.andersen.internship.testproject.GridImagesPresenter;
+import com.andersen.internship.testproject.IMAGES_TYPES;
 import com.andersen.internship.testproject.R;
+import com.andersen.internship.testproject.adapters.GridImagesAdapter;
+import com.andersen.internship.testproject.data.Child;
+import com.andersen.internship.testproject.mvp.Presenter;
 
+import java.util.List;
+
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class SlideshowFragment extends AbstractFragment {
+public class SlideshowFragment extends AbstractFragment implements com.andersen.internship.testproject.mvp.View{
 
+    @BindView(R.id.new_posts)
+    Button newPosts;
+
+    @BindView(R.id.top)
+    Button topPosts;
+
+    @BindView(R.id.image_list)
+    RecyclerView recyclerView;
+
+    @BindView(R.id.progressBar)
+    ProgressBar progressBar;
+
+    private GridImagesAdapter adapter;
+
+    private Presenter presenter;
+
+    private IMAGES_TYPES imagesTypes = IMAGES_TYPES.NEW;
 
 
     public SlideshowFragment() {
@@ -42,8 +72,74 @@ public class SlideshowFragment extends AbstractFragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        recyclerViewInit();
+        initPresenter();
+        setOnClickListeners();
+
     }
 
+    private void setOnClickListeners(){
+        topPosts.setOnClickListener(view -> {
+            presenter.loadImages(IMAGES_TYPES.TOP);
+            imagesTypes = IMAGES_TYPES.TOP;
+        });
+
+        newPosts.setOnClickListener(view -> {
+            presenter.loadImages(IMAGES_TYPES.NEW);
+            imagesTypes = IMAGES_TYPES.NEW;
+
+        });
+    }
+
+    private void initPresenter(){
+        presenter = new GridImagesPresenter(this);
+        getLifecycle().addObserver(presenter);
+        presenter.loadImages(imagesTypes);
+
+    }
+
+    private void recyclerViewInit(){
+
+        GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
+        layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+            @Override
+            public int getSpanSize(int position) {
+                return (position % 3 == 0 ? 2 : 1);
+            }
+        });
+
+        recyclerView.setLayoutManager(layoutManager);
+
+        adapter = new GridImagesAdapter();
+        recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public void showContent(List<Child> children) {
+        adapter.setList(children);
+    }
+
+    @Override
+    public void showProgress() {
+        recyclerView.setVisibility(View.GONE);
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    @Override
+    public void hideProgress() {
+        recyclerView.setVisibility(View.VISIBLE);
+        progressBar.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showError(String cause) {
+        Toast.makeText(getActivity(), cause, Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void setProgress(int value) {
+        progressBar.setProgress(value);
+    }
 
 
 
