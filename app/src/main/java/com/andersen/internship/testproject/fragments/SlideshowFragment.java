@@ -5,7 +5,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +23,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 public class SlideshowFragment extends AbstractFragment implements com.andersen.internship.testproject.mvp.View{
 
@@ -45,7 +45,6 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
 
     private IMAGES_TYPES imagesTypes = IMAGES_TYPES.NEW;
 
-
     public SlideshowFragment() {
         setIdTitle(R.string.slideshow);
     }
@@ -53,7 +52,6 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("myLogs", "onCreate");
     }
 
     @Nullable
@@ -63,7 +61,6 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
         setRetainInstance(true);
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_slideshow, container, false);
         unbinder = ButterKnife.bind(this, rootView);
-        Log.d("myLogs", "onCreateView");
 
         return rootView;
     }
@@ -75,7 +72,6 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
         recyclerViewInit();
         initPresenter();
         setOnClickListeners();
-
     }
 
     private void setOnClickListeners(){
@@ -140,7 +136,4 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
     public void setProgress(int value) {
         progressBar.setProgress(value);
     }
-
-
-
 }
