@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.andersen.internship.testproject.GridImagesPresenter;
+import com.andersen.internship.testproject.HideScrollListener;
 import com.andersen.internship.testproject.IMAGES_TYPES;
 import com.andersen.internship.testproject.R;
 import com.andersen.internship.testproject.adapters.GridImagesAdapter;
@@ -23,7 +25,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.disposables.CompositeDisposable;
 
 public class SlideshowFragment extends AbstractFragment implements com.andersen.internship.testproject.mvp.View{
 
@@ -83,7 +84,6 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
         newPosts.setOnClickListener(view -> {
             presenter.loadImages(IMAGES_TYPES.NEW);
             imagesTypes = IMAGES_TYPES.NEW;
-
         });
     }
 
@@ -91,7 +91,6 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
         presenter = new GridImagesPresenter(this);
         getLifecycle().addObserver(presenter);
         presenter.loadImages(imagesTypes);
-
     }
 
     private void recyclerViewInit(){
@@ -108,6 +107,20 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
 
         adapter = new GridImagesAdapter();
         recyclerView.setAdapter(adapter);
+
+        recyclerView.addOnScrollListener(new HideScrollListener() {
+            @Override
+            public void onHide() {
+                newPosts.setVisibility(View.INVISIBLE);
+                topPosts.setVisibility(View.INVISIBLE);
+            }
+
+            @Override
+            public void onShow() {
+                newPosts.setVisibility(View.VISIBLE);
+                topPosts.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override
