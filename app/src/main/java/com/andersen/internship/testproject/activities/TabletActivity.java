@@ -31,6 +31,8 @@ public class TabletActivity extends AbstractDeviceTypeActivity {
 
         ButterKnife.bind(this);
 
+        initToolbar();
+
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 

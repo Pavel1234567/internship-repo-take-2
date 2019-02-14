@@ -38,7 +38,7 @@ public class MobileActivity extends AbstractDeviceTypeActivity
 
         ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
+        initToolbar();
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
