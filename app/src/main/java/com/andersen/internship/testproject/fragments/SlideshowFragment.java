@@ -8,6 +8,9 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -43,12 +46,6 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
 
-    @BindView(R.id.linear)
-    Button selectLinear;
-
-    @BindView(R.id.grid)
-    Button selectGrid;
-
     private GridImagesAdapter adapter;
 
     private Presenter presenter;
@@ -67,6 +64,7 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
         super.onCreate(savedInstanceState);
         Log.d("myLogs", "onCreate");
         layoutManagerType = GRID;
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -91,6 +89,23 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
 
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.slideshow_fragment, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (layoutManagerType == GRID){
+            setLinearLayoutManager();
+        }else {
+            setGridLayoutManager();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void setOnClickListeners() {
         topPosts.setOnClickListener(view -> {
             presenter.loadImages(IMAGES_TYPES.TOP);
@@ -103,9 +118,6 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
 
         });
 
-        selectGrid.setOnClickListener(view -> setGridLayoutManager());
-
-        selectLinear.setOnClickListener(view -> setLinearLayoutManager());
     }
 
     private void setLinearLayoutManager() {
