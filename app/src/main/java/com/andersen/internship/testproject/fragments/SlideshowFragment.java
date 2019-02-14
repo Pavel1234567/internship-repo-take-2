@@ -85,7 +85,7 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerViewInit();
+        initRecyclerView();
         initPresenter();
         setOnClickListeners();
 
@@ -137,7 +137,7 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
 
     }
 
-    private void recyclerViewInit() {
+    private void initRecyclerView() {
 
         Log.d("myLog", layoutManagerType.name());
         switch (layoutManagerType) {
