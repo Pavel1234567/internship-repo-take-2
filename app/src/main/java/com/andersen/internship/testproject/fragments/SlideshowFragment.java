@@ -1,5 +1,7 @@
 package com.andersen.internship.testproject.fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -9,6 +11,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -111,14 +115,54 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
         recyclerView.addOnScrollListener(new HideScrollListener() {
             @Override
             public void onHide() {
-                newPosts.setVisibility(View.INVISIBLE);
-                topPosts.setVisibility(View.INVISIBLE);
+                Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.hide_button);
+
+                anim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        newPosts.setVisibility(View.GONE);
+                        topPosts.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+                newPosts.startAnimation(anim);
+                topPosts.startAnimation(anim);
             }
 
             @Override
             public void onShow() {
-                newPosts.setVisibility(View.VISIBLE);
-                topPosts.setVisibility(View.VISIBLE);
+                Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.show_button);
+
+                anim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        newPosts.setVisibility(View.VISIBLE);
+                        topPosts.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+                newPosts.startAnimation(anim);
+                topPosts.startAnimation(anim);
             }
         });
     }

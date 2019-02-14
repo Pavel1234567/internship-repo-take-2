@@ -25,6 +25,5 @@ public abstract class AbstractDeviceTypeActivity extends AppCompatActivity {
         router = new FragmentRouter(this);
         setTitle(title);
 
-
     }
 }
