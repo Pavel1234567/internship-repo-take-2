@@ -6,7 +6,6 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -28,6 +27,7 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import io.reactivex.disposables.CompositeDisposable;
 
 import static com.andersen.internship.testproject.fragments.SlideshowFragment.LayoutManagerTypes.GRID;
 import static com.andersen.internship.testproject.fragments.SlideshowFragment.LayoutManagerTypes.LINEAR;
@@ -54,7 +54,6 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
 
     private LayoutManagerTypes layoutManagerType;
 
-
     public SlideshowFragment() {
         setIdTitle(R.string.slideshow);
     }
@@ -62,7 +61,6 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.d("myLogs", "onCreate");
         layoutManagerType = GRID;
         setHasOptionsMenu(true);
     }
@@ -74,7 +72,6 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
         setRetainInstance(true);
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_slideshow, container, false);
         unbinder = ButterKnife.bind(this, rootView);
-        Log.d("myLogs", "onCreateView");
 
         return rootView;
     }
@@ -86,7 +83,6 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
         initRecyclerView();
         initPresenter();
         setOnClickListeners();
-
     }
 
     @Override
@@ -162,7 +158,6 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
 
     private void initRecyclerView() {
 
-        Log.d("myLog", layoutManagerType.name());
         switch (layoutManagerType) {
 
             case GRID:
