@@ -25,10 +25,6 @@ public class MobileActivity extends AbstractDeviceTypeActivity
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         title = getResources().getString(R.string.mobile_edition);
@@ -62,22 +58,6 @@ public class MobileActivity extends AbstractDeviceTypeActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.slideshow_fragment, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override

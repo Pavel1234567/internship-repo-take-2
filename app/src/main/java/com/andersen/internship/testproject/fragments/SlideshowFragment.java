@@ -93,6 +93,14 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         super.onCreateOptionsMenu(menu, inflater);
         inflater.inflate(R.menu.slideshow_fragment, menu);
+
+        MenuItem item = menu.findItem(R.id.manager_type);
+
+        if (layoutManagerType == GRID){
+            item.setIcon(R.drawable.ic_looks_one_black_24dp);
+        }else {
+            item.setIcon(R.drawable.ic_looks_two_black_24dp);
+        }
     }
 
     @Override
@@ -100,8 +108,11 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
 
         if (layoutManagerType == GRID){
             setLinearLayoutManager();
+            item.setIcon(R.drawable.ic_looks_two_black_24dp);
+
         }else {
             setGridLayoutManager();
+            item.setIcon(R.drawable.ic_looks_one_black_24dp);
         }
         return super.onOptionsItemSelected(item);
     }
