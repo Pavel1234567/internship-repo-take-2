@@ -4,8 +4,12 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,7 +29,10 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.disposables.CompositeDisposable;
 
-public class SlideshowFragment extends AbstractFragment implements com.andersen.internship.testproject.mvp.View{
+import static com.andersen.internship.testproject.fragments.SlideshowFragment.LayoutManagerTypes.GRID;
+import static com.andersen.internship.testproject.fragments.SlideshowFragment.LayoutManagerTypes.LINEAR;
+
+public class SlideshowFragment extends AbstractFragment implements com.andersen.internship.testproject.mvp.View {
 
     @BindView(R.id.new_posts)
     Button newPosts;
@@ -45,6 +52,8 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
 
     private IMAGES_TYPES imagesTypes = IMAGES_TYPES.NEW;
 
+    private LayoutManagerTypes layoutManagerType;
+
     public SlideshowFragment() {
         setIdTitle(R.string.slideshow);
     }
@@ -52,6 +61,8 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        layoutManagerType = GRID;
+        setHasOptionsMenu(true);
     }
 
     @Nullable
@@ -69,12 +80,40 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        recyclerViewInit();
+        initRecyclerView();
         initPresenter();
         setOnClickListeners();
     }
 
-    private void setOnClickListeners(){
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.slideshow_fragment, menu);
+
+        MenuItem item = menu.findItem(R.id.manager_type);
+
+        if (layoutManagerType == GRID){
+            item.setIcon(R.drawable.ic_looks_one_black_24dp);
+        }else {
+            item.setIcon(R.drawable.ic_looks_two_black_24dp);
+        }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        if (layoutManagerType == GRID){
+            setLinearLayoutManager();
+            item.setIcon(R.drawable.ic_looks_two_black_24dp);
+
+        }else {
+            setGridLayoutManager();
+            item.setIcon(R.drawable.ic_looks_one_black_24dp);
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void setOnClickListeners() {
         topPosts.setOnClickListener(view -> {
             presenter.loadImages(IMAGES_TYPES.TOP);
             imagesTypes = IMAGES_TYPES.TOP;
@@ -85,17 +124,17 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
             imagesTypes = IMAGES_TYPES.NEW;
 
         });
-    }
-
-    private void initPresenter(){
-        presenter = new GridImagesPresenter(this);
-        getLifecycle().addObserver(presenter);
-        presenter.loadImages(imagesTypes);
 
     }
 
-    private void recyclerViewInit(){
+    private void setLinearLayoutManager() {
+        LinearLayoutManager layout = new LinearLayoutManager(getActivity());
+        recyclerView.setLayoutManager(layout);
 
+        layoutManagerType = LINEAR;
+    }
+
+    private void setGridLayoutManager() {
         GridLayoutManager layoutManager = new GridLayoutManager(getActivity(), 2);
         layoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
@@ -105,6 +144,30 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
         });
 
         recyclerView.setLayoutManager(layoutManager);
+
+        layoutManagerType = GRID;
+    }
+
+
+    private void initPresenter() {
+        presenter = new GridImagesPresenter(this);
+        getLifecycle().addObserver(presenter);
+        presenter.loadImages(imagesTypes);
+
+    }
+
+    private void initRecyclerView() {
+
+        switch (layoutManagerType) {
+
+            case GRID:
+                setGridLayoutManager();
+                break;
+
+            case LINEAR:
+                setLinearLayoutManager();
+                break;
+        }
 
         adapter = new GridImagesAdapter();
         recyclerView.setAdapter(adapter);
@@ -135,5 +198,11 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
     @Override
     public void setProgress(int value) {
         progressBar.setProgress(value);
+    }
+
+    enum LayoutManagerTypes {
+        
+        LINEAR,
+        GRID
     }
 }

@@ -18,4 +18,5 @@
     <string name="hello">Привет)</string>
     <string name="new_posts">New</string>
     <string name="top">Top</string>
+    <string name="change_view">изменить вид</string>
 </resources>
