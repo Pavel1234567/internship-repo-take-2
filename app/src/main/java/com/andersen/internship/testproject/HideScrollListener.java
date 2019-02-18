@@ -12,21 +12,21 @@ public abstract class HideScrollListener extends RecyclerView.OnScrollListener {
     @Override
     public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
         super.onScrollStateChanged(recyclerView, newState);
-
-        onShow();
         scrolledDistance = 0;
-        controlsVisible = true;
     }
 
     @Override
     public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
         super.onScrolled(recyclerView, dx, dy);
 
-        if(scrolledDistance < HIDE_THRESHOLD) {
-            scrolledDistance += Math.abs(dy);
+        if(Math.abs(scrolledDistance) < Math.abs(HIDE_THRESHOLD)) {
+            scrolledDistance += dy;
             if (scrolledDistance > HIDE_THRESHOLD && controlsVisible) {
                 onHide();
                 controlsVisible = false;
+            }else if (scrolledDistance < - HIDE_THRESHOLD && !controlsVisible){
+                onShow();
+                controlsVisible = true;
             }
         }
     }
