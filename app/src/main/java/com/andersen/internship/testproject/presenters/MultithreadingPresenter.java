@@ -10,19 +10,11 @@ import com.andersen.internship.testproject.mvp.multithreading.Model;
 import com.andersen.internship.testproject.mvp.multithreading.Presenter;
 import com.andersen.internship.testproject.mvp.multithreading.View;
 
-import static com.andersen.internship.testproject.MyAsyncLoader.LOADER_ID;
-import static com.andersen.internship.testproject.MyAsyncLoader.SIZE;
-
 public class MultithreadingPresenter implements Presenter {
 
-    private View.ViewWithAsyncLoader view;
+    private View view;
     private Model model = DummyServer.getDummyServer();
 
-    private int percentageDownloaded = 0;
-
-
-    public MultithreadingPresenter() {
-    }
 
     @Override
     public void load(String loadType, int size) {
@@ -34,13 +26,13 @@ public class MultithreadingPresenter implements Presenter {
 
 
         }else if (loadType.equals(arrayTypes[2])){
-
-            view.runLoader(size);
-
+            View.ViewWithAsyncLoader vieviewWithAsyncLoaderWAL = (View.ViewWithAsyncLoader) view;
+            vieviewWithAsyncLoaderWAL.runLoader(size);
 
         }else if (loadType.equals(arrayTypes[3])){
 
-
+            View.ViewWithService viewWithService = (View.ViewWithService) view;
+            viewWithService.runService(size);
         }
 
     }
@@ -53,7 +45,7 @@ public class MultithreadingPresenter implements Presenter {
 
     @Override
     public void onAttach(View view) {
-        this.view = (View.ViewWithAsyncLoader) view;
+        this.view = view;
         //view.setProgress(percentageDownloaded);
     }
 }

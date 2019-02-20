@@ -28,8 +28,6 @@ public abstract class AbstractDeviceTypeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         router = new FragmentRouter(this);
         setTitle(title);
-
-
     }
 
     void initToolbar(){

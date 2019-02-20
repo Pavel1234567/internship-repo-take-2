@@ -1,6 +1,15 @@
 package com.andersen.internship.testproject.fragments;
 
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.IBinder;
+import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
@@ -17,6 +26,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.andersen.internship.testproject.MyAsyncLoader;
+import com.andersen.internship.testproject.MyIntentService;
 import com.andersen.internship.testproject.R;
 import com.andersen.internship.testproject.mvp.multithreading.Presenter;
 import com.andersen.internship.testproject.presenters.MultithreadingPresenter;
@@ -26,9 +36,14 @@ import butterknife.ButterKnife;
 
 import static com.andersen.internship.testproject.MyAsyncLoader.LOADER_ID;
 import static com.andersen.internship.testproject.MyAsyncLoader.SIZE;
+import static com.andersen.internship.testproject.MyIntentService.BROADCAST_ACTION;
+import static com.andersen.internship.testproject.MyIntentService.DATA;
+import static com.andersen.internship.testproject.MyIntentService.MESSAGE;
+import static com.andersen.internship.testproject.MyIntentService.RECEIVED_TYPE;
 
 public class ToolsFragment extends AbstractFragment implements com.andersen.internship.testproject.mvp.multithreading.View,
-        com.andersen.internship.testproject.mvp.multithreading.View.ViewWithAsyncLoader {
+        com.andersen.internship.testproject.mvp.multithreading.View.ViewWithAsyncLoader,
+        com.andersen.internship.testproject.mvp.multithreading.View.ViewWithService {
 
     @BindView(R.id.spinner)
     Spinner spinner;
@@ -49,7 +64,7 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     ProgressBar progressBar;
 
     private Presenter presenter;
-
+    private BroadcastReceiver broadcastReceiver;
 
 
     public ToolsFragment() {
@@ -61,9 +76,6 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_tools, container, false);
         unbinder = ButterKnife.bind(this, rootView);
-        Log.d("myLogs", "onCreateView"+String.valueOf(progressBar == null));
-        Log.d("myLogs", "onCreateView"+String.valueOf(hashCode()));
-
 
         return rootView;
     }
@@ -77,23 +89,37 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
         presenter.onAttach(this);
 
         getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
-        Log.d("myLogs", "initLoader");
 
+        broadcastReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                int type = intent.getIntExtra(RECEIVED_TYPE, 0);
+
+                if (type == DATA){
+                    String rez = intent.getStringExtra(MESSAGE);
+                    setData(rez);
+                }
+            }
+        };
+
+        IntentFilter intFilt = new IntentFilter(BROADCAST_ACTION);
+        getActivity().registerReceiver(broadcastReceiver, intFilt);
     }
 
-    private void setOnClickListeners(){
+
+    private void setOnClickListeners() {
         start.setOnClickListener(view -> startClick());
         stop.setOnClickListener(view -> stopClick());
     }
 
-    private void startClick(){
+    private void startClick() {
         String type = spinner.getSelectedItem().toString();
 
         int size = Integer.parseInt(inputSize.getEditableText().toString());
         presenter.load(type, size);
     }
 
-    private void stopClick(){
+    private void stopClick() {
 
     }
 
@@ -111,11 +137,7 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
 
     @Override
     public void setProgress(int progress) {
-        if (progressBar != null)
-            progressBar.setProgress(progress);
-        Log.d("myLogs", String.valueOf(progressBar == null));
-        Log.d("myLogs", String.valueOf(hashCode()));
-
+        progressBar.setProgress(progress);
     }
 
 
@@ -145,15 +167,22 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
         Bundle bundle = new Bundle();
         bundle.putInt(SIZE, size);
 
-
         Loader<String> loader = getLoaderManager().restartLoader(LOADER_ID, bundle, this);
         loader.forceLoad();
     }
-
 
     @Override
     public void onDestroy() {
         super.onDestroy();
         presenter.onDetach();
+        getActivity().unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
+    public void runService(int size) {
+        Intent intent = new Intent(getActivity(), MyIntentService.class);
+        intent.putExtra(SIZE, size);
+        getActivity().startService(intent);
+
     }
 }

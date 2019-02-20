@@ -20,7 +20,7 @@ public class MyAsyncLoader extends AsyncTaskLoader<String> {
     public static final String SIZE = "SIZE";
 
     private Bundle bundle;
-    private Model model = DummyServer.getDummyServer();
+    private Model model;
     private Disposable progressObserverDisposable;
 
 
