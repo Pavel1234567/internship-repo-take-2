@@ -1,14 +1,14 @@
-package com.andersen.internship.testproject;
+package com.andersen.internship.testproject.presenters;
 
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.OnLifecycleEvent;
-import android.util.Log;
 
+import com.andersen.internship.testproject.IMAGES_TYPES;
 import com.andersen.internship.testproject.data.Child;
 import com.andersen.internship.testproject.data.Post;
-import com.andersen.internship.testproject.mvp.Model;
-import com.andersen.internship.testproject.mvp.Presenter;
-import com.andersen.internship.testproject.mvp.View;
+import com.andersen.internship.testproject.mvp.reddit.Model;
+import com.andersen.internship.testproject.mvp.reddit.Presenter;
+import com.andersen.internship.testproject.mvp.reddit.View;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -20,7 +20,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.andersen.internship.testproject.GridImagesModel.getModel;
+import static com.andersen.internship.testproject.models.GridImagesModel.getModel;
 
 public class GridImagesPresenter implements Presenter {
 

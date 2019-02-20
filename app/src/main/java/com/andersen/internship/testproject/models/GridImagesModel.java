@@ -1,9 +1,8 @@
-package com.andersen.internship.testproject;
+package com.andersen.internship.testproject.models;
 
-import android.util.Log;
-
+import com.andersen.internship.testproject.IMAGES_TYPES;
 import com.andersen.internship.testproject.data.Post;
-import com.andersen.internship.testproject.mvp.Model;
+import com.andersen.internship.testproject.mvp.reddit.Model;
 
 import io.reactivex.Observable;
 

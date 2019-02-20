@@ -1,4 +1,4 @@
-package com.andersen.internship.testproject.mvp;
+package com.andersen.internship.testproject.mvp.reddit;
 
 import com.andersen.internship.testproject.data.Child;
 import com.andersen.internship.testproject.data.Post;

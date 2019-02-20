@@ -19,4 +19,14 @@
     <string name="new_posts">New</string>
     <string name="top">Top</string>
     <string name="change_view">изменить вид</string>
+
+    <string name="start">Старт</string>
+    <string name="stop">Стоп</string>
+    <string-array name="multithreading_items">
+        <item>Handler</item>
+        <item>AsyncTask</item>
+        <item>AsyncTaskLoader</item>
+        <item>IntentService</item>
+    </string-array>
+
 </resources>
