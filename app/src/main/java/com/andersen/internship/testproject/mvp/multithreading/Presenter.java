@@ -20,4 +20,7 @@ public interface Presenter {
     void onDetach();
     void onAttach(View view);
 
+    public interface PresenterWithAsyncTask{
+        void setRawData(List<Double> list);
+    }
 }

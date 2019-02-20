@@ -98,6 +98,8 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
                 if (type == DATA){
                     String rez = intent.getStringExtra(MESSAGE);
                     setData(rez);
+                    showDownloadStatus("конец загрузки");
+
                 }
             }
         };
@@ -153,7 +155,7 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     @Override
     public void onLoadFinished(@NonNull Loader<String> loader, String s) {
         setData(s);
-        Log.d("myLogs", "onLoadFinished");
+        showDownloadStatus("конец загрузки");
     }
 
     @Override
@@ -180,6 +182,8 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
 
     @Override
     public void runService(int size) {
+        showDownloadStatus("начало загрузки");
+
         Intent intent = new Intent(getActivity(), MyIntentService.class);
         intent.putExtra(SIZE, size);
         getActivity().startService(intent);
