@@ -1,19 +1,17 @@
 package com.andersen.internship.testproject.presenters;
 
 import android.os.AsyncTask;
-import android.os.Bundle;
-import android.support.v4.content.Loader;
+import android.os.Handler;
 
 import com.andersen.internship.testproject.App;
 import com.andersen.internship.testproject.R;
 import com.andersen.internship.testproject.models.DummyServer;
-import com.andersen.internship.testproject.mvp.multithreading.Model;
 import com.andersen.internship.testproject.mvp.multithreading.Presenter;
 import com.andersen.internship.testproject.mvp.multithreading.View;
 
 import java.util.List;
 
-public class MultithreadingPresenter implements Presenter, Presenter.PresenterWithAsyncTask {
+public class MultithreadingPresenter implements Presenter, Presenter.PresenterWithAsyncTool {
 
     private View view;
 
@@ -23,21 +21,48 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
     public void load(String loadType, int size) {
         String[] arrayTypes = App.getContext().getResources().getStringArray(R.array.multithreading_items);
         if (loadType.equals(arrayTypes[0])){
-            
+            runHandler(size);
 
         }else if (loadType.equals(arrayTypes[1])){
-            view.showDownloadStatus("Загрузка началась");
-            MyAsyncTask myAsyncTask = new MyAsyncTask(this);
-            myAsyncTask.execute(size);
+            runAsyncTask(size);
 
         }else if (loadType.equals(arrayTypes[2])){
-            View.ViewWithAsyncLoader vieviewWithAsyncLoaderWAL = (View.ViewWithAsyncLoader) view;
-            vieviewWithAsyncLoaderWAL.runLoader(size);
+            runAyncLoader(size);
 
         }else if (loadType.equals(arrayTypes[3])){
-            View.ViewWithService viewWithService = (View.ViewWithService) view;
-            viewWithService.runService(size);
+            runIntentService(size);
         }
+    }
+
+    private void runIntentService(int size) {
+        View.ViewWithService viewWithService = (View.ViewWithService) view;
+        viewWithService.runService(size);
+    }
+
+    private void runAyncLoader(int size) {
+        View.ViewWithAsyncLoader vieviewWithAsyncLoaderWAL = (View.ViewWithAsyncLoader) view;
+        vieviewWithAsyncLoaderWAL.runLoader(size);
+    }
+
+    private void runHandler(int size){
+        Handler handler = new Handler();
+
+        Thread thread = new Thread(() -> {
+            List<Double> list = DummyServer.getDummyServer().getDummyData(size);
+            String rez = Presenter.handleData(list);
+            handler.post(() -> {
+                setData(rez);
+                view.showDownloadStatus("конец загрузки");
+            });
+        });
+
+        thread.start();
+    }
+
+    private void runAsyncTask(int size){
+        view.showDownloadStatus("Загрузка началась");
+        MyAsyncTask myAsyncTask = new MyAsyncTask(this);
+        myAsyncTask.execute(size);
     }
 
     @Override
@@ -52,17 +77,16 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
     }
 
     @Override
-    public void setRawData(List<Double> list) {
-        String rez = Presenter.handleData(list);
-        view.showDownloadStatus(rez);
+    public void setData(String string) {
+        view.setData(string);
     }
 
 
     private static class MyAsyncTask extends AsyncTask<Integer, Void, List<Double>> {
 
-        private Presenter presenter;
+        private PresenterWithAsyncTool presenter;
 
-        MyAsyncTask(Presenter presenter) {
+        MyAsyncTask(PresenterWithAsyncTool presenter) {
             this.presenter = presenter;
         }
 
@@ -80,8 +104,7 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
         @Override
         protected void onPostExecute(List<Double> list) {
             super.onPostExecute(list);
-            PresenterWithAsyncTask presenterWithAsyncTask = (PresenterWithAsyncTask) presenter;
-            presenterWithAsyncTask.setRawData(list);
+            presenter.setData(Presenter.handleData(list));
         }
 
         @Override
