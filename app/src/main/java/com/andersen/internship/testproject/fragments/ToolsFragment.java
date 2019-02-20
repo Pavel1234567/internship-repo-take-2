@@ -67,8 +67,17 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     private BroadcastReceiver broadcastReceiver;
 
 
+
+
     public ToolsFragment() {
         setIdTitle(R.string.tools);
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        presenter = new MultithreadingPresenter();
+
     }
 
     @Nullable
@@ -76,6 +85,10 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_tools, container, false);
         unbinder = ButterKnife.bind(this, rootView);
+
+        setRetainInstance(true);
+
+        presenter.onAttach(this);
 
         return rootView;
     }
@@ -85,8 +98,6 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
         super.onViewCreated(view, savedInstanceState);
         setOnClickListeners();
 
-        presenter = new MultithreadingPresenter();
-        presenter.onAttach(this);
 
         getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
@@ -124,7 +135,6 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     private void stopClick() {
 
     }
-
 
     //View
     @Override
@@ -173,9 +183,10 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
         loader.forceLoad();
     }
 
+
     @Override
-    public void onDestroy() {
-        super.onDestroy();
+    public void onDestroyView() {
+        super.onDestroyView();
         presenter.onDetach();
         getActivity().unregisterReceiver(broadcastReceiver);
     }

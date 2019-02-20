@@ -2,6 +2,7 @@ package com.andersen.internship.testproject.presenters;
 
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.util.Log;
 
 import com.andersen.internship.testproject.App;
 import com.andersen.internship.testproject.R;
@@ -16,6 +17,18 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
     private View view;
 
 
+    public MultithreadingPresenter() {
+        DummyServer.getDummyServer()
+                .observeProgress()
+                .subscribe(integer -> {
+
+                    if (view != null){
+//                        Log.d("myLogs3", "setProgress " + String.valueOf(view.hashCode()));
+
+                        view.setProgress(integer);
+                    }
+        });
+    }
 
     @Override
     public void load(String loadType, int size) {
@@ -50,7 +63,10 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
         Thread thread = new Thread(() -> {
             List<Double> list = DummyServer.getDummyServer().getDummyData(size);
             String rez = Presenter.handleData(list);
+            Log.d("myLogs3", "thread " + String.valueOf(view == null));
+
             handler.post(() -> {
+                Log.d("myLogs3", "post " + String.valueOf(view == null));
                 setData(rez);
                 view.showDownloadStatus("конец загрузки");
             });
@@ -67,17 +83,19 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
 
     @Override
     public void onDetach() {
+        Log.d("myLogs3", "onDetach " + String.valueOf(view.hashCode()));
         view = null;
     }
-
 
     @Override
     public void onAttach(View view) {
         this.view = view;
+        Log.d("myLogs3", "onAttach " + String.valueOf(view.hashCode()));
     }
 
     @Override
     public void setData(String string) {
+
         view.setData(string);
     }
 
