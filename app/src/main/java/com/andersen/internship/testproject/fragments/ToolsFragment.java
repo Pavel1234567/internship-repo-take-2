@@ -1,20 +1,13 @@
 package com.andersen.internship.testproject.fragments;
 
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.ServiceConnection;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.IBinder;
-import android.os.ResultReceiver;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -65,6 +58,7 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
 
     private Presenter presenter;
     private BroadcastReceiver broadcastReceiver;
+    private Intent intentForService;
 
 
 
@@ -133,7 +127,7 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     }
 
     private void stopClick() {
-
+        presenter.stopLoading();
     }
 
     //View
@@ -157,7 +151,6 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     @NonNull
     @Override
     public Loader<String> onCreateLoader(int i, @Nullable Bundle bundle) {
-        Log.d("myLogs", "onCreateLoader");
         Loader<String> loader = new MyAsyncLoader(getActivity(), bundle);
         return loader;
     }
@@ -170,7 +163,6 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
 
     @Override
     public void onLoaderReset(@NonNull Loader<String> loader) {
-        Log.d("myLogs", "onLoaderReset");
     }
 
     @Override
@@ -181,6 +173,11 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
 
         Loader<String> loader = getLoaderManager().restartLoader(LOADER_ID, bundle, this);
         loader.forceLoad();
+    }
+
+    @Override
+    public void stopLoader() {
+        getLoaderManager().destroyLoader(LOADER_ID);
     }
 
 
@@ -195,9 +192,14 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     public void runService(int size) {
         showDownloadStatus("начало загрузки");
 
-        Intent intent = new Intent(getActivity(), MyIntentService.class);
-        intent.putExtra(SIZE, size);
-        getActivity().startService(intent);
+        intentForService = new Intent(getActivity(), MyIntentService.class);
+        intentForService.putExtra(SIZE, size);
+        getActivity().startService(intentForService);
 
+    }
+
+    @Override
+    public void stopService() {
+        getActivity().stopService(intentForService);
     }
 }

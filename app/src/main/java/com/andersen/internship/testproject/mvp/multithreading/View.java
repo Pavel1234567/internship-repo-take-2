@@ -11,9 +11,11 @@ public interface View {
 
     public interface ViewWithAsyncLoader extends LoaderManager.LoaderCallbacks<String>, View{
         void runLoader(int size);
+        void stopLoader();
     }
 
     public interface ViewWithService{
         void runService(int size);
+        void stopService();
     }
 }

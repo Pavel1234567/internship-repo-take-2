@@ -17,6 +17,7 @@ public interface Presenter {
     }
 
     void load(String loadType, int size);
+    void stopLoading();
     void onDetach();
     void onAttach(View view);
 
