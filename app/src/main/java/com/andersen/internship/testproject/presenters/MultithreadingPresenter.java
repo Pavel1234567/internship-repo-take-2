@@ -24,6 +24,8 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
     private Runnable removeCallbacks;
     private MyAsyncTask myAsyncTask;
 
+    private Thread thread;
+
 
     private void initLoadStatusDisposable(){
         loadStatusDisposable = DummyServer.getDummyServer()
@@ -43,7 +45,6 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
 
     @Override
     public void load(String loadType, int size) {
-        Log.d("myLogs", String.valueOf(loadStatusDisposable == null));
         if (loadStatusDisposable != null){
             deleteLoadStatusDisposable();
         }
@@ -67,7 +68,15 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
 
     @Override
     public void stopLoading() {
-        loadStatusDisposable.dispose();
+        if (loadStatusDisposable != null) {
+            loadStatusDisposable.dispose();
+        }else {
+            return;
+        }
+
+        if (currentLoadType == null){
+            return;
+        }
 
         if (currentLoadType.equals(arrayTypes[0])){
             stopHandler();
@@ -100,6 +109,7 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
 
     private void stopHandler() {
         handler.removeCallbacks(removeCallbacks);
+        thread.interrupt();
     }
 
     private void runIntentService(int size) {
@@ -115,21 +125,22 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
     private void runHandler(int size){
         handler = new Handler();
 
-        Thread thread = new Thread(() -> {
+        thread = new Thread(() -> {
             List<Double> list = DummyServer.getDummyServer().getDummyData(size);
             String rez = Presenter.handleData(list);
             removeCallbacks = () -> {
                 setData(rez);
-                view.showDownloadStatus("конец загрузки");
+                view.showDownloadStatus(App.getContext().getResources().getString(R.string.finish_load));
             };
             handler.post(removeCallbacks);
         });
+
 
         thread.start();
     }
 
     private void runAsyncTask(int size){
-        view.showDownloadStatus("Загрузка началась");
+        view.showDownloadStatus(App.getContext().getResources().getString(R.string.start_load));
         myAsyncTask = new MyAsyncTask(this);
         myAsyncTask.execute(size);
     }

@@ -25,7 +25,6 @@ public class MyIntentService extends IntentService {
     public static final String MESSAGE = "MESSAGE";
 
     public static final int DATA = 1;
-    public static final int PROGRESS = 2;
 
     public MyIntentService() {
         super("myname");
@@ -33,17 +32,14 @@ public class MyIntentService extends IntentService {
 
     @Override
     protected void onHandleIntent( Intent intent) {
-        //TODO: сделать константу
 
         int size = intent.getIntExtra(SIZE, 0);
         List<Double> list = DummyServer.getDummyServer().getDummyData(size);
         String rez = Presenter.handleData(list);
 
-        //TODO: добавить прогресс
         Intent intent1 = new Intent(BROADCAST_ACTION);
         intent1.putExtra(RECEIVED_TYPE, DATA);
         intent1.putExtra(MESSAGE, rez);
         sendBroadcast(intent1);
-
     }
 }

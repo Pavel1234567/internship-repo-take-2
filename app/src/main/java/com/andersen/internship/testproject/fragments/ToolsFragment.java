@@ -23,6 +23,7 @@ import com.andersen.internship.testproject.MyIntentService;
 import com.andersen.internship.testproject.R;
 import com.andersen.internship.testproject.mvp.multithreading.Presenter;
 import com.andersen.internship.testproject.presenters.MultithreadingPresenter;
+import com.andersen.internship.testproject.routers.ServiceRouter;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -58,7 +59,7 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
 
     private Presenter presenter;
     private BroadcastReceiver broadcastReceiver;
-    private Intent intentForService;
+    private ServiceRouter serviceRouter;
 
 
 
@@ -103,11 +104,13 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
                 if (type == DATA){
                     String rez = intent.getStringExtra(MESSAGE);
                     setData(rez);
-                    showDownloadStatus("конец загрузки");
+                    showDownloadStatus(getString(R.string.finish_load));
 
                 }
             }
         };
+
+        serviceRouter = new ServiceRouter(getActivity());
 
         IntentFilter intFilt = new IntentFilter(BROADCAST_ACTION);
         getActivity().registerReceiver(broadcastReceiver, intFilt);
@@ -151,14 +154,14 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     @NonNull
     @Override
     public Loader<String> onCreateLoader(int i, @Nullable Bundle bundle) {
-        Loader<String> loader = new MyAsyncLoader(getActivity(), bundle);
+        Loader<String> loader = new MyAsyncLoader(getContext(), bundle);
         return loader;
     }
 
     @Override
     public void onLoadFinished(@NonNull Loader<String> loader, String s) {
         setData(s);
-        showDownloadStatus("конец загрузки");
+        showDownloadStatus(getString(R.string.finish_load));
     }
 
     @Override
@@ -167,7 +170,7 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
 
     @Override
     public void runLoader(int size) {
-        showDownloadStatus("начало загрузки");
+        showDownloadStatus(getString(R.string.start_load));
         Bundle bundle = new Bundle();
         bundle.putInt(SIZE, size);
 
@@ -190,16 +193,12 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
 
     @Override
     public void runService(int size) {
-        showDownloadStatus("начало загрузки");
-
-        intentForService = new Intent(getActivity(), MyIntentService.class);
-        intentForService.putExtra(SIZE, size);
-        getActivity().startService(intentForService);
-
+        showDownloadStatus(getString(R.string.start_load));
+        serviceRouter.startService(size);
     }
 
     @Override
     public void stopService() {
-        getActivity().stopService(intentForService);
+        serviceRouter.stopService();
     }
 }
