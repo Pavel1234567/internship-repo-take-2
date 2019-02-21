@@ -25,10 +25,6 @@ public class MobileActivity extends AbstractDeviceTypeActivity
     @BindView(R.id.drawer_layout)
     DrawerLayout drawer;
 
-    @BindView(R.id.toolbar)
-    Toolbar toolbar;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         title = getResources().getString(R.string.mobile_edition);
@@ -38,7 +34,7 @@ public class MobileActivity extends AbstractDeviceTypeActivity
 
         ButterKnife.bind(this);
 
-        setSupportActionBar(toolbar);
+        initToolbar();
 
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -62,22 +58,6 @@ public class MobileActivity extends AbstractDeviceTypeActivity
         }
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
-    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
