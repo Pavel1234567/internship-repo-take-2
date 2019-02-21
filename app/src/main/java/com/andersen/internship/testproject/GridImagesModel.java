@@ -32,10 +32,12 @@ public class GridImagesModel implements Model {
                     .getList(imagesType.toString())
                     .doOnNext( items -> {
                         getCache().setImages(items, imagesType);
+                        Log.d("myLogs", "network");
 
                     });
         }else {
             observable = Observable.just(getCache().getImages(imagesType));
+            Log.d("myLogs", "cache");
         }
         return observable;
     }

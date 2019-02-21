@@ -1,22 +1,28 @@
 package com.andersen.internship.testproject.fragments;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.andersen.internship.testproject.GridImagesPresenter;
+import com.andersen.internship.testproject.HideScrollListener;
 import com.andersen.internship.testproject.IMAGES_TYPES;
 import com.andersen.internship.testproject.R;
 import com.andersen.internship.testproject.adapters.GridImagesAdapter;
@@ -27,7 +33,6 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import io.reactivex.disposables.CompositeDisposable;
 
 import static com.andersen.internship.testproject.fragments.SlideshowFragment.LayoutManagerTypes.GRID;
 import static com.andersen.internship.testproject.fragments.SlideshowFragment.LayoutManagerTypes.LINEAR;
@@ -92,9 +97,9 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
 
         MenuItem item = menu.findItem(R.id.manager_type);
 
-        if (layoutManagerType == GRID){
+        if (layoutManagerType == GRID) {
             item.setIcon(R.drawable.ic_looks_one_black_24dp);
-        }else {
+        } else {
             item.setIcon(R.drawable.ic_looks_two_black_24dp);
         }
     }
@@ -102,11 +107,11 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
-        if (layoutManagerType == GRID){
+        if (layoutManagerType == GRID) {
             setLinearLayoutManager();
             item.setIcon(R.drawable.ic_looks_two_black_24dp);
 
-        }else {
+        } else {
             setGridLayoutManager();
             item.setIcon(R.drawable.ic_looks_one_black_24dp);
         }
@@ -122,9 +127,14 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
         newPosts.setOnClickListener(view -> {
             presenter.loadImages(IMAGES_TYPES.NEW);
             imagesTypes = IMAGES_TYPES.NEW;
-
         });
 
+    }
+
+    private void initPresenter() {
+        presenter = new GridImagesPresenter(this);
+        getLifecycle().addObserver(presenter);
+        presenter.loadImages(imagesTypes);
     }
 
     private void setLinearLayoutManager() {
@@ -148,14 +158,6 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
         layoutManagerType = GRID;
     }
 
-
-    private void initPresenter() {
-        presenter = new GridImagesPresenter(this);
-        getLifecycle().addObserver(presenter);
-        presenter.loadImages(imagesTypes);
-
-    }
-
     private void initRecyclerView() {
 
         switch (layoutManagerType) {
@@ -171,6 +173,60 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
 
         adapter = new GridImagesAdapter();
         recyclerView.setAdapter(adapter);
+
+        recyclerView.addOnScrollListener(new HideScrollListener() {
+            @Override
+            public void onHide() {
+                Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.hide_button);
+
+                anim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        newPosts.setVisibility(View.GONE);
+                        topPosts.setVisibility(View.GONE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+                newPosts.startAnimation(anim);
+                topPosts.startAnimation(anim);
+            }
+
+            @Override
+            public void onShow() {
+                Animation anim = AnimationUtils.loadAnimation(getActivity(), R.anim.show_button);
+
+                anim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        newPosts.setVisibility(View.VISIBLE);
+                        topPosts.setVisibility(View.VISIBLE);
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+
+                    }
+                });
+
+                newPosts.startAnimation(anim);
+                topPosts.startAnimation(anim);
+            }
+        });
     }
 
     @Override
@@ -201,7 +257,7 @@ public class SlideshowFragment extends AbstractFragment implements com.andersen.
     }
 
     enum LayoutManagerTypes {
-        
+
         LINEAR,
         GRID
     }
