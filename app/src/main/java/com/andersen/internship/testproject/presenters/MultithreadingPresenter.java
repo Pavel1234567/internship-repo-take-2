@@ -26,6 +26,8 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
 
     private Thread thread;
 
+    private boolean isRunning = false;
+
 
     private void initLoadStatusDisposable(){
         loadStatusDisposable = DummyServer.getDummyServer()
@@ -34,20 +36,33 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
 
                     if (view != null){
                         view.setProgress(integer);
+
                     }
-                });
+                },
+                        e -> {
+                            isRunning = false;
+
+                        },
+                        () -> {
+                            isRunning = false;
+                        }
+                );
+
     }
 
     private void deleteLoadStatusDisposable(){
         loadStatusDisposable.dispose();
+
         loadStatusDisposable = null;
     }
 
     @Override
     public void load(String loadType, int size) {
-        if (loadStatusDisposable != null){
-            deleteLoadStatusDisposable();
+
+        if (isRunning){
+            stopLoading();
         }
+        isRunning = true;
         initLoadStatusDisposable();
 
         currentLoadType = loadType;
@@ -68,15 +83,15 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
 
     @Override
     public void stopLoading() {
-        if (loadStatusDisposable != null) {
-            loadStatusDisposable.dispose();
-        }else {
-            return;
-        }
 
-        if (currentLoadType == null){
-            return;
-        }
+        Log.d("myLogs", "stopLoading " + currentLoadType);
+
+
+        if (!isRunning) return;
+
+        isRunning = false;
+        deleteLoadStatusDisposable();
+        view.setProgress(0);
 
         if (currentLoadType.equals(arrayTypes[0])){
             stopHandler();
@@ -108,7 +123,6 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
     }
 
     private void stopHandler() {
-        handler.removeCallbacks(removeCallbacks);
         thread.interrupt();
     }
 
@@ -126,13 +140,18 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
         handler = new Handler();
 
         thread = new Thread(() -> {
-            List<Double> list = DummyServer.getDummyServer().getDummyData(size);
-            String rez = Presenter.handleData(list);
-            removeCallbacks = () -> {
-                setData(rez);
-                view.showDownloadStatus(App.getContext().getResources().getString(R.string.finish_load));
-            };
-            handler.post(removeCallbacks);
+            try {
+                List<Double> list = DummyServer.getDummyServer().getDummyData(size);
+                String rez = Presenter.handleData(list);
+                removeCallbacks = () -> {
+                    setData(rez);
+                    view.showDownloadStatus(App.getContext().getResources().getString(R.string.finish_load));
+                };
+                handler.post(removeCallbacks);
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
         });
 
 
@@ -156,8 +175,19 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
     }
 
     @Override
+    public void onDestroy() {
+        Log.d("myLogs", "onDestroy");
+        stopLoading();
+
+        onDetach();
+    }
+
+    @Override
     public void setData(String string) {
+        Log.d("myLogs", "setData");
+
         view.setData(string);
+
     }
 
 

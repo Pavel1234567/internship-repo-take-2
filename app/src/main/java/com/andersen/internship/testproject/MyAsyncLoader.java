@@ -21,7 +21,6 @@ public class MyAsyncLoader extends AsyncTaskLoader<String> {
 
     private Bundle bundle;
     private Model model;
-    private Disposable progressObserverDisposable;
 
 
 
@@ -29,8 +28,6 @@ public class MyAsyncLoader extends AsyncTaskLoader<String> {
         super(context);
         this.bundle = bundle;
         model = DummyServer.getDummyServer();
-        progressObserverDisposable = model.observeProgress()
-                .subscribe();
     }
 
     @Override

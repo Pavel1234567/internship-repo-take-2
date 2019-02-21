@@ -1,5 +1,7 @@
 package com.andersen.internship.testproject.models;
 
+import android.util.Log;
+
 import com.andersen.internship.testproject.mvp.multithreading.Model;
 
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ public class DummyServer implements Model {
     @Override
     public List<Double> getDummyData(int dataSize) {
         List<Double> dummyData = new ArrayList<>();
+
         for (int i = 0; i < dataSize; i++){
             dummyData.add(Math.random());
             try {
@@ -34,8 +37,11 @@ public class DummyServer implements Model {
 
             } catch (InterruptedException e) {
                 e.printStackTrace();
+                return null;
+
             }
         }
+        subject.onComplete();
         return dummyData;
 
     }

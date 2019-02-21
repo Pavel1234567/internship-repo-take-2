@@ -20,6 +20,7 @@ public interface Presenter {
     void stopLoading();
     void onDetach();
     void onAttach(View view);
+    void onDestroy();
 
     public interface PresenterWithAsyncTool {
         void setData(String string);

@@ -54,6 +54,9 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     @BindView(R.id.stop)
     Button stop;
 
+    @BindView(R.id.clear)
+    Button clear;
+
     @BindView(R.id.progressBar)
     ProgressBar progressBar;
 
@@ -120,11 +123,13 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     private void setOnClickListeners() {
         start.setOnClickListener(view -> startClick());
         stop.setOnClickListener(view -> stopClick());
+        clear.setOnClickListener(view -> outputData.setText(""));
     }
 
     private void startClick() {
         String type = spinner.getSelectedItem().toString();
 
+        //if (!type.matches("[-+]?\\d+"))  return;
         int size = Integer.parseInt(inputSize.getEditableText().toString());
         presenter.load(type, size);
     }
@@ -200,5 +205,11 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     @Override
     public void stopService() {
         serviceRouter.stopService();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        presenter.onDestroy();
     }
 }
