@@ -12,9 +12,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-        <service
-            android:name=".MyIntentService"
-            android:exported="false"></service>
+
+        <service android:name=".MyIntentService"/>
 
         <activity android:name=".activities.MainActivity">
             <intent-filter>

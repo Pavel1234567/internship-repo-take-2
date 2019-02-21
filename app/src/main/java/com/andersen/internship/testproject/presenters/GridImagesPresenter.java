@@ -58,8 +58,10 @@ public class GridImagesPresenter implements Presenter {
                     for (int i = 0; i < list.size(); ) {
                         
                         String postHint = list.get(i).getData().getPostHint();
-                        if (postHint == null || !postHint.equals(IMAGE))
+                        if (postHint == null || !postHint.equals(IMAGE)){
                             list.remove(i);
+                        }
+
                         else i++;
                     }
                     return list;

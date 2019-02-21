@@ -29,5 +29,6 @@ public class ServiceRouter {
 
     public void stopService(){
         weakReference.get().stopService(intent);
+//        intent = null;
     }
 }

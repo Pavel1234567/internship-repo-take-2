@@ -39,25 +39,24 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
 
                     }
                 },
-                        e -> {
-                            isRunning = false;
+                        e -> isRunning = false,
+                        () -> isRunning = false
 
-                        },
-                        () -> {
-                            isRunning = false;
-                        }
                 );
 
     }
 
     private void deleteLoadStatusDisposable(){
         loadStatusDisposable.dispose();
-
         loadStatusDisposable = null;
     }
 
     @Override
-    public void load(String loadType, int size) {
+    public void load(String loadType, String arg) {
+        //if (!type.matches("[-+]?\\d+"))  return;
+        int size = Integer.parseInt(arg);
+
+        view.showDownloadStatus(App.getContext().getResources().getString(R.string.start_load));
 
         if (isRunning){
             stopLoading();
@@ -115,7 +114,6 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
     private void stopAyncLoader() {
         View.ViewWithAsyncLoader viewWithAsyncLoader = (View.ViewWithAsyncLoader) view;
         viewWithAsyncLoader.stopLoader();
-
     }
 
     private void stopAsyncTask() {
@@ -145,7 +143,6 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
                 String rez = Presenter.handleData(list);
                 removeCallbacks = () -> {
                     setData(rez);
-                    view.showDownloadStatus(App.getContext().getResources().getString(R.string.finish_load));
                 };
                 handler.post(removeCallbacks);
             } catch (Exception e) {
@@ -153,13 +150,10 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
 
             }
         });
-
-
         thread.start();
     }
 
     private void runAsyncTask(int size){
-        view.showDownloadStatus(App.getContext().getResources().getString(R.string.start_load));
         myAsyncTask = new MyAsyncTask(this);
         myAsyncTask.execute(size);
     }
@@ -178,16 +172,13 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
     public void onDestroy() {
         Log.d("myLogs", "onDestroy");
         stopLoading();
-
         onDetach();
     }
 
     @Override
     public void setData(String string) {
         Log.d("myLogs", "setData");
-
         view.setData(string);
-
     }
 
 

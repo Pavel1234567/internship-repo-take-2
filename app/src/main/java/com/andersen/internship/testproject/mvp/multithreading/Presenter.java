@@ -16,7 +16,7 @@ public interface Presenter {
         return dataS.toString();
     }
 
-    void load(String loadType, int size);
+    void load(String loadType, String arg);
     void stopLoading();
     void onDetach();
     void onAttach(View view);

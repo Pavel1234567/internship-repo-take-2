@@ -37,9 +37,15 @@ public class MyIntentService extends IntentService {
         List<Double> list = DummyServer.getDummyServer().getDummyData(size);
         String rez = Presenter.handleData(list);
 
-        Intent intent1 = new Intent(BROADCAST_ACTION);
-        intent1.putExtra(RECEIVED_TYPE, DATA);
-        intent1.putExtra(MESSAGE, rez);
-        sendBroadcast(intent1);
+        Intent intentGiveBack = new Intent(BROADCAST_ACTION);
+        intentGiveBack.putExtra(RECEIVED_TYPE, DATA);
+        intentGiveBack.putExtra(MESSAGE, rez);
+        sendBroadcast(intentGiveBack);
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        Log.d("myLogs", "onDestroy");
     }
 }

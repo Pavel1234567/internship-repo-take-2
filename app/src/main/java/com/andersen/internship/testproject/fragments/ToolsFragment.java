@@ -107,7 +107,6 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
                 if (type == DATA){
                     String rez = intent.getStringExtra(MESSAGE);
                     setData(rez);
-                    showDownloadStatus(getString(R.string.finish_load));
 
                 }
             }
@@ -115,8 +114,7 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
 
         serviceRouter = new ServiceRouter(getActivity());
 
-        IntentFilter intFilt = new IntentFilter(BROADCAST_ACTION);
-        getActivity().registerReceiver(broadcastReceiver, intFilt);
+
     }
 
 
@@ -130,8 +128,8 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
         String type = spinner.getSelectedItem().toString();
 
         //if (!type.matches("[-+]?\\d+"))  return;
-        int size = Integer.parseInt(inputSize.getEditableText().toString());
-        presenter.load(type, size);
+        String arg = inputSize.getEditableText().toString();
+        presenter.load(type, arg);
     }
 
     private void stopClick() {
@@ -147,6 +145,7 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     @Override
     public void setData(String s) {
         outputData.setText(s);
+        showDownloadStatus(getString(R.string.finish_load));
     }
 
     @Override
@@ -166,7 +165,6 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     @Override
     public void onLoadFinished(@NonNull Loader<String> loader, String s) {
         setData(s);
-        showDownloadStatus(getString(R.string.finish_load));
     }
 
     @Override
@@ -175,7 +173,6 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
 
     @Override
     public void runLoader(int size) {
-        showDownloadStatus(getString(R.string.start_load));
         Bundle bundle = new Bundle();
         bundle.putInt(SIZE, size);
 
@@ -190,15 +187,16 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
 
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onStop() {
+        super.onStop();
         presenter.onDetach();
         getActivity().unregisterReceiver(broadcastReceiver);
     }
 
     @Override
     public void runService(int size) {
-        showDownloadStatus(getString(R.string.start_load));
+        IntentFilter intFilt = new IntentFilter(BROADCAST_ACTION);
+        getActivity().registerReceiver(broadcastReceiver, intFilt);
         serviceRouter.startService(size);
     }
 

@@ -29,7 +29,7 @@ public class DummyServer implements Model {
         List<Double> dummyData = new ArrayList<>();
 
         for (int i = 0; i < dataSize; i++){
-            dummyData.add(Math.random());
+            dummyData.add(i + 0.0);
             try {
                 Thread.sleep(200);
                 double percentage =  (double) i / (dataSize-1) * 100.0;
@@ -42,6 +42,7 @@ public class DummyServer implements Model {
             }
         }
         subject.onComplete();
+        subject = PublishSubject.create();
         return dummyData;
 
     }
