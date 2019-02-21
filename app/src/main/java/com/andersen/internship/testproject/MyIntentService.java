@@ -35,11 +35,11 @@ public class MyIntentService extends IntentService {
 
         int size = intent.getIntExtra(SIZE, 0);
         List<Double> list = DummyServer.getDummyServer().getDummyData(size);
-        String rez = Presenter.handleData(list);
+        String result = Presenter.handleData(list);
 
         Intent intentGiveBack = new Intent(BROADCAST_ACTION);
         intentGiveBack.putExtra(RECEIVED_TYPE, DATA);
-        intentGiveBack.putExtra(MESSAGE, rez);
+        intentGiveBack.putExtra(MESSAGE, result);
         sendBroadcast(intentGiveBack);
     }
 

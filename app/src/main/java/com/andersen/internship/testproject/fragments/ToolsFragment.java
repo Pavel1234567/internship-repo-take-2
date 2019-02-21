@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +20,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.andersen.internship.testproject.MyAsyncLoader;
-import com.andersen.internship.testproject.MyIntentService;
 import com.andersen.internship.testproject.R;
 import com.andersen.internship.testproject.mvp.multithreading.Presenter;
 import com.andersen.internship.testproject.presenters.MultithreadingPresenter;
@@ -85,9 +85,7 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
         unbinder = ButterKnife.bind(this, rootView);
 
         setRetainInstance(true);
-
-        presenter.onAttach(this);
-
+        presenter.onCreate(this);
         return rootView;
     }
 
@@ -95,7 +93,6 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         setOnClickListeners();
-
 
         getActivity().getSupportLoaderManager().initLoader(LOADER_ID, null, this);
 
@@ -105,18 +102,18 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
                 int type = intent.getIntExtra(RECEIVED_TYPE, 0);
 
                 if (type == DATA){
-                    String rez = intent.getStringExtra(MESSAGE);
-                    setData(rez);
+                    String result = intent.getStringExtra(MESSAGE);
+                    setText(result);
 
                 }
             }
         };
+        IntentFilter intFilt = new IntentFilter(BROADCAST_ACTION);
+        getActivity().registerReceiver(broadcastReceiver, intFilt);
+
 
         serviceRouter = new ServiceRouter(getActivity());
-
-
     }
-
 
     private void setOnClickListeners() {
         start.setOnClickListener(view -> startClick());
@@ -126,8 +123,6 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
 
     private void startClick() {
         String type = spinner.getSelectedItem().toString();
-
-        //if (!type.matches("[-+]?\\d+"))  return;
         String arg = inputSize.getEditableText().toString();
         presenter.load(type, arg);
     }
@@ -143,7 +138,7 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     }
 
     @Override
-    public void setData(String s) {
+    public void setText(String s) {
         outputData.setText(s);
         showDownloadStatus(getString(R.string.finish_load));
     }
@@ -164,7 +159,7 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
 
     @Override
     public void onLoadFinished(@NonNull Loader<String> loader, String s) {
-        setData(s);
+        setText(s);
     }
 
     @Override
@@ -195,8 +190,6 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
 
     @Override
     public void runService(int size) {
-        IntentFilter intFilt = new IntentFilter(BROADCAST_ACTION);
-        getActivity().registerReceiver(broadcastReceiver, intFilt);
         serviceRouter.startService(size);
     }
 
@@ -207,6 +200,8 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
 
     @Override
     public void onDestroy() {
+        Log.d("myLogs", "onDestroy frag");
+
         super.onDestroy();
         presenter.onDestroy();
     }

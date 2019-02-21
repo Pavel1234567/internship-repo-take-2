@@ -5,7 +5,7 @@ import android.support.v4.app.LoaderManager;
 public interface View {
 
     void showDownloadStatus(String message);
-    void setData(String s);
+    void setText(String s);
     void setProgress(int progress);
 
 

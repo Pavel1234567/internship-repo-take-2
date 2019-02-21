@@ -19,7 +19,7 @@ public interface Presenter {
     void load(String loadType, String arg);
     void stopLoading();
     void onDetach();
-    void onAttach(View view);
+    void onCreate(View view);
     void onDestroy();
 
     public interface PresenterWithAsyncTool {

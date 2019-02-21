@@ -33,7 +33,7 @@ public class MyAsyncLoader extends AsyncTaskLoader<String> {
     @Override
     public String loadInBackground() {
         int size = bundle.getInt(SIZE);
-        List<Double> rez = model.getDummyData(size);
-        return Presenter.handleData(rez);
+        List<Double> listResult = model.getDummyData(size);
+        return Presenter.handleData(listResult);
     }
 }

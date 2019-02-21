@@ -48,7 +48,6 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
 
     private void deleteLoadStatusDisposable(){
         loadStatusDisposable.dispose();
-        loadStatusDisposable = null;
     }
 
     @Override
@@ -82,9 +81,6 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
 
     @Override
     public void stopLoading() {
-
-        Log.d("myLogs", "stopLoading " + currentLoadType);
-
 
         if (!isRunning) return;
 
@@ -161,24 +157,25 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
     @Override
     public void onDetach() {
         view = null;
+        Log.d("myLogs", "onDetach");
     }
 
     @Override
-    public void onAttach(View view) {
+    public void onCreate(View view) {
         this.view = view;
+        Log.d("myLogs", "onCreate");
+
     }
 
     @Override
     public void onDestroy() {
-        Log.d("myLogs", "onDestroy");
         stopLoading();
         onDetach();
     }
 
     @Override
     public void setData(String string) {
-        Log.d("myLogs", "setData");
-        view.setData(string);
+        view.setText(string);
     }
 
 
