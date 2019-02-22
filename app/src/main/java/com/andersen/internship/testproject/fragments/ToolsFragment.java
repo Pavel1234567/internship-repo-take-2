@@ -108,12 +108,36 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
                 }
             }
         };
-        IntentFilter intFilt = new IntentFilter(BROADCAST_ACTION);
-        getActivity().registerReceiver(broadcastReceiver, intFilt);
-
-
         serviceRouter = new ServiceRouter(getActivity());
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        IntentFilter intFilt = new IntentFilter(BROADCAST_ACTION);
+        getActivity().registerReceiver(broadcastReceiver, intFilt);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        getActivity().unregisterReceiver(broadcastReceiver);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        presenter.onDetach();
+    }
+
+    @Override
+    public void onDestroy() {
+        Log.d("myLogs", "onDestroy frag");
+
+        super.onDestroy();
+        presenter.onDestroy();
+    }
+
 
     private void setOnClickListeners() {
         start.setOnClickListener(view -> startClick());
@@ -166,6 +190,7 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     public void onLoaderReset(@NonNull Loader<String> loader) {
     }
 
+
     @Override
     public void runLoader(int size) {
         Bundle bundle = new Bundle();
@@ -181,12 +206,6 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     }
 
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        presenter.onDetach();
-        getActivity().unregisterReceiver(broadcastReceiver);
-    }
 
     @Override
     public void runService(int size) {
@@ -196,13 +215,5 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     @Override
     public void stopService() {
         serviceRouter.stopService();
-    }
-
-    @Override
-    public void onDestroy() {
-        Log.d("myLogs", "onDestroy frag");
-
-        super.onDestroy();
-        presenter.onDestroy();
     }
 }
