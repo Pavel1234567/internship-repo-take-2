@@ -11,6 +11,7 @@ import android.util.Log;
 import com.andersen.internship.testproject.activities.MainActivity;
 import com.andersen.internship.testproject.models.DummyServer;
 import com.andersen.internship.testproject.mvp.multithreading.Presenter;
+import com.andersen.internship.testproject.presenters.MultithreadingPresenter;
 
 import java.util.List;
 
@@ -35,7 +36,7 @@ public class MyIntentService extends IntentService {
 
         int size = intent.getIntExtra(SIZE, 0);
         List<Double> list = DummyServer.getDummyServer().getDummyData(size);
-        String result = Presenter.handleData(list);
+        String result = MultithreadingPresenter.getPresenter().handleData(list);
 
         Intent intentGiveBack = new Intent(BROADCAST_ACTION);
         intentGiveBack.putExtra(RECEIVED_TYPE, DATA);

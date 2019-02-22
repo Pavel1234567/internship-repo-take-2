@@ -13,6 +13,7 @@ import com.andersen.internship.testproject.mvp.multithreading.ViewForMT;
 import com.andersen.internship.testproject.mvp.multithreading.ViewWithAsyncLoader;
 import com.andersen.internship.testproject.mvp.multithreading.ViewWithService;
 
+import java.util.Arrays;
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
@@ -22,7 +23,7 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
     private ViewForMT viewForMT;
     private String currentLoadType;
     private Disposable loadStatusDisposable;
-    private String[] arrayTypes = App.getContext().getResources().getStringArray(R.array.multithreading_items);
+    private List<String> listTypes = Arrays.asList(App.getContext().getResources().getStringArray(R.array.multithreading_items));
     private Handler handler;
     private Runnable removeCallbacks;
     private MyAsyncTask myAsyncTask;
@@ -31,6 +32,21 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
 
     private boolean isRunning = false;
 
+
+    public static final int HANDLER = 0;
+    public static final int ASYNC_TASK = 1;
+    public static final int ASYNC_TASK_LOADER = 2;
+    public static final int INTENT_SERVICE = 3;
+
+    private static MultithreadingPresenter presenter;
+    private MultithreadingPresenter(){}
+
+    public static synchronized MultithreadingPresenter getPresenter(){
+        if (presenter == null){
+            presenter = new MultithreadingPresenter();
+        }
+        return presenter;
+    }
 
     private void initLoadStatusDisposable(){
         loadStatusDisposable = DummyServer.getDummyServer()
@@ -44,9 +60,7 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
                 },
                         e -> isRunning = false,
                         () -> isRunning = false
-
                 );
-
     }
 
     private void deleteLoadStatusDisposable(){
@@ -68,16 +82,16 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
 
         currentLoadType = loadType;
 
-        if (loadType.equals(arrayTypes[0])){
+        if (loadType.equals(listTypes.get(HANDLER))){
             runHandler(size);
 
-        }else if (loadType.equals(arrayTypes[1])){
+        }else if (loadType.equals(listTypes.get(ASYNC_TASK))){
             runAsyncTask(size);
 
-        }else if (loadType.equals(arrayTypes[2])){
+        }else if (loadType.equals(listTypes.get(ASYNC_TASK_LOADER))){
             runAyncLoader(size);
 
-        }else if (loadType.equals(arrayTypes[3])){
+        }else if (loadType.equals(listTypes.get(INTENT_SERVICE))){
             runIntentService(size);
         }
     }
@@ -91,16 +105,16 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
         deleteLoadStatusDisposable();
         viewForMT.setProgress(0);
 
-        if (currentLoadType.equals(arrayTypes[0])){
+        if (currentLoadType.equals(listTypes.get(HANDLER))){
             stopHandler();
 
-        }else if (currentLoadType.equals(arrayTypes[1])){
+        }else if (currentLoadType.equals(listTypes.get(ASYNC_TASK))){
             stopAsyncTask();
 
-        }else if (currentLoadType.equals(arrayTypes[2])){
+        }else if (currentLoadType.equals(listTypes.get(ASYNC_TASK_LOADER))){
             stopAyncLoader();
 
-        }else if (currentLoadType.equals(arrayTypes[3])){
+        }else if (currentLoadType.equals(listTypes.get(INTENT_SERVICE))){
             stopIntentService();
         }
     }
@@ -139,7 +153,7 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
         thread = new Thread(() -> {
             try {
                 List<Double> list = DummyServer.getDummyServer().getDummyData(size);
-                String rez = Presenter.handleData(list);
+                String rez = MultithreadingPresenter.getPresenter().handleData(list);
                 removeCallbacks = () -> {
                     setData(rez);
                 };
@@ -158,27 +172,22 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
     }
 
     @Override
-    public void onDetach() {
+    public void onStop() {
         viewForMT = null;
-        Log.d("myLogs", "onDetach");
+        Log.d("myLogs", "onStop");
     }
 
     @Override
     public void onCreate(ViewForMT viewForMT) {
         this.viewForMT = viewForMT;
         Log.d("myLogs", "onCreate");
-
-    }
-
-    @Override
-    public void onDestroy() {
-        stopLoading();
-        onDetach();
     }
 
     @Override
     public void setData(String string) {
-        viewForMT.setText(string);
+        if (viewForMT != null) {
+            viewForMT.setText(string);
+        }
     }
 
 
@@ -204,12 +213,19 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
         @Override
         protected void onPostExecute(List<Double> list) {
             super.onPostExecute(list);
-            presenter.setData(Presenter.handleData(list));
+            presenter.setData(MultithreadingPresenter.getPresenter().handleData(list));
         }
 
         @Override
         protected void onCancelled() {
             super.onCancelled();
         }
+    }
+
+    public enum MultithreadingTypes{
+        Handler,
+        AsyncTask,
+        AsyncTaskLoad,
+        IntentService
     }
 }

@@ -72,7 +72,7 @@ public class ToolsFragment extends AbstractFragment implements ViewForMT, ViewWi
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter = new MultithreadingPresenter();
+        presenter = MultithreadingPresenter.getPresenter();
 
     }
 
@@ -82,7 +82,6 @@ public class ToolsFragment extends AbstractFragment implements ViewForMT, ViewWi
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_tools, container, false);
         unbinder = ButterKnife.bind(this, rootView);
 
-        setRetainInstance(true);
         presenter.onCreate(this);
         return rootView;
     }
@@ -125,7 +124,7 @@ public class ToolsFragment extends AbstractFragment implements ViewForMT, ViewWi
     @Override
     public void onStop() {
         super.onStop();
-        presenter.onDetach();
+        presenter.onStop();
     }
 
     @Override
@@ -133,7 +132,6 @@ public class ToolsFragment extends AbstractFragment implements ViewForMT, ViewWi
         Log.d("myLogs", "onDestroy frag");
 
         super.onDestroy();
-        presenter.onDestroy();
     }
 
 

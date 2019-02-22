@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface Presenter {
 
-    static String handleData(List<Double> list){
+    default String handleData(List<Double> list){
 
         StringBuilder dataS = new StringBuilder();
         for (double d: list){
@@ -15,7 +15,6 @@ public interface Presenter {
 
     void load(String loadType, String arg);
     void stopLoading();
-    void onDetach();
+    void onStop();
     void onCreate(ViewForMT viewForMT);
-    void onDestroy();
 }
