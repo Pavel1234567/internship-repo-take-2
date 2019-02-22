@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.andersen.internship.testproject.mvp.reddit.ViewForReddit;
 import com.andersen.internship.testproject.presenters.GridImagesPresenter;
 import com.andersen.internship.testproject.IMAGES_TYPES;
 import com.andersen.internship.testproject.R;
@@ -31,7 +32,7 @@ import butterknife.ButterKnife;
 import static com.andersen.internship.testproject.fragments.SlideshowFragment.LayoutManagerTypes.GRID;
 import static com.andersen.internship.testproject.fragments.SlideshowFragment.LayoutManagerTypes.LINEAR;
 
-public class SlideshowFragment extends AbstractFragment implements com.andersen.internship.testproject.mvp.reddit.View {
+public class SlideshowFragment extends AbstractFragment implements ViewForReddit {
 
     @BindView(R.id.new_posts)
     Button newPosts;

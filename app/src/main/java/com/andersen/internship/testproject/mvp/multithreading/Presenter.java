@@ -1,8 +1,5 @@
 package com.andersen.internship.testproject.mvp.multithreading;
 
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
-
 import java.util.List;
 
 public interface Presenter {
@@ -19,10 +16,6 @@ public interface Presenter {
     void load(String loadType, String arg);
     void stopLoading();
     void onDetach();
-    void onCreate(View view);
+    void onCreate(ViewForMT viewForMT);
     void onDestroy();
-
-    public interface PresenterWithAsyncTool {
-        void setData(String string);
-    }
 }

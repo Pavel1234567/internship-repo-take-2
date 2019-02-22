@@ -8,15 +8,18 @@ import com.andersen.internship.testproject.App;
 import com.andersen.internship.testproject.R;
 import com.andersen.internship.testproject.models.DummyServer;
 import com.andersen.internship.testproject.mvp.multithreading.Presenter;
-import com.andersen.internship.testproject.mvp.multithreading.View;
+import com.andersen.internship.testproject.mvp.multithreading.PresenterWithAsyncTool;
+import com.andersen.internship.testproject.mvp.multithreading.ViewForMT;
+import com.andersen.internship.testproject.mvp.multithreading.ViewWithAsyncLoader;
+import com.andersen.internship.testproject.mvp.multithreading.ViewWithService;
 
 import java.util.List;
 
 import io.reactivex.disposables.Disposable;
 
-public class MultithreadingPresenter implements Presenter, Presenter.PresenterWithAsyncTool {
+public class MultithreadingPresenter implements Presenter, PresenterWithAsyncTool {
 
-    private View view;
+    private ViewForMT viewForMT;
     private String currentLoadType;
     private Disposable loadStatusDisposable;
     private String[] arrayTypes = App.getContext().getResources().getStringArray(R.array.multithreading_items);
@@ -34,8 +37,8 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
                 .observeProgress()
                 .subscribe(integer -> {
 
-                    if (view != null){
-                        view.setProgress(integer);
+                    if (viewForMT != null){
+                        viewForMT.setProgress(integer);
 
                     }
                 },
@@ -55,7 +58,7 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
         //if (!type.matches("[-+]?\\d+"))  return;
         int size = Integer.parseInt(arg);
 
-        view.showDownloadStatus(App.getContext().getResources().getString(R.string.start_load));
+        viewForMT.showDownloadStatus(App.getContext().getResources().getString(R.string.start_load));
 
         if (isRunning){
             stopLoading();
@@ -86,7 +89,7 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
 
         isRunning = false;
         deleteLoadStatusDisposable();
-        view.setProgress(0);
+        viewForMT.setProgress(0);
 
         if (currentLoadType.equals(arrayTypes[0])){
             stopHandler();
@@ -103,12 +106,12 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
     }
 
     private void stopIntentService() {
-        View.ViewWithService viewWithService = (View.ViewWithService) view;
+        ViewWithService viewWithService = (ViewWithService) viewForMT;
         viewWithService.stopService();
     }
 
     private void stopAyncLoader() {
-        View.ViewWithAsyncLoader viewWithAsyncLoader = (View.ViewWithAsyncLoader) view;
+        ViewWithAsyncLoader viewWithAsyncLoader = (ViewWithAsyncLoader) viewForMT;
         viewWithAsyncLoader.stopLoader();
     }
 
@@ -121,12 +124,12 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
     }
 
     private void runIntentService(int size) {
-        View.ViewWithService viewWithService = (View.ViewWithService) view;
+        ViewWithService viewWithService = (ViewWithService) viewForMT;
         viewWithService.runService(size);
     }
 
     private void runAyncLoader(int size) {
-        View.ViewWithAsyncLoader vieviewWithAsyncLoaderWAL = (View.ViewWithAsyncLoader) view;
+        ViewWithAsyncLoader vieviewWithAsyncLoaderWAL = (ViewWithAsyncLoader) viewForMT;
         vieviewWithAsyncLoaderWAL.runLoader(size);
     }
 
@@ -156,13 +159,13 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
 
     @Override
     public void onDetach() {
-        view = null;
+        viewForMT = null;
         Log.d("myLogs", "onDetach");
     }
 
     @Override
-    public void onCreate(View view) {
-        this.view = view;
+    public void onCreate(ViewForMT viewForMT) {
+        this.viewForMT = viewForMT;
         Log.d("myLogs", "onCreate");
 
     }
@@ -175,7 +178,7 @@ public class MultithreadingPresenter implements Presenter, Presenter.PresenterWi
 
     @Override
     public void setData(String string) {
-        view.setText(string);
+        viewForMT.setText(string);
     }
 
 

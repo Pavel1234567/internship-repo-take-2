@@ -22,6 +22,9 @@ import android.widget.Toast;
 import com.andersen.internship.testproject.MyAsyncLoader;
 import com.andersen.internship.testproject.R;
 import com.andersen.internship.testproject.mvp.multithreading.Presenter;
+import com.andersen.internship.testproject.mvp.multithreading.ViewForMT;
+import com.andersen.internship.testproject.mvp.multithreading.ViewWithAsyncLoader;
+import com.andersen.internship.testproject.mvp.multithreading.ViewWithService;
 import com.andersen.internship.testproject.presenters.MultithreadingPresenter;
 import com.andersen.internship.testproject.routers.ServiceRouter;
 
@@ -35,9 +38,7 @@ import static com.andersen.internship.testproject.MyIntentService.DATA;
 import static com.andersen.internship.testproject.MyIntentService.MESSAGE;
 import static com.andersen.internship.testproject.MyIntentService.RECEIVED_TYPE;
 
-public class ToolsFragment extends AbstractFragment implements com.andersen.internship.testproject.mvp.multithreading.View,
-        com.andersen.internship.testproject.mvp.multithreading.View.ViewWithAsyncLoader,
-        com.andersen.internship.testproject.mvp.multithreading.View.ViewWithService {
+public class ToolsFragment extends AbstractFragment implements ViewForMT, ViewWithAsyncLoader, ViewWithService {
 
     @BindView(R.id.spinner)
     Spinner spinner;
@@ -63,9 +64,6 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
     private Presenter presenter;
     private BroadcastReceiver broadcastReceiver;
     private ServiceRouter serviceRouter;
-
-
-
 
     public ToolsFragment() {
         setIdTitle(R.string.tools);
@@ -155,7 +153,7 @@ public class ToolsFragment extends AbstractFragment implements com.andersen.inte
         presenter.stopLoading();
     }
 
-    //View
+    //ViewForMT
     @Override
     public void showDownloadStatus(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();

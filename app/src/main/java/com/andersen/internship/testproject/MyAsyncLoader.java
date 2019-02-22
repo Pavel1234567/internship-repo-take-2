@@ -1,18 +1,14 @@
 package com.andersen.internship.testproject;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 
 import com.andersen.internship.testproject.models.DummyServer;
 import com.andersen.internship.testproject.mvp.multithreading.Model;
 import com.andersen.internship.testproject.mvp.multithreading.Presenter;
-import com.andersen.internship.testproject.mvp.multithreading.View;
 
 import java.util.List;
-
-import io.reactivex.disposables.Disposable;
 
 public class MyAsyncLoader extends AsyncTaskLoader<String> {
 
