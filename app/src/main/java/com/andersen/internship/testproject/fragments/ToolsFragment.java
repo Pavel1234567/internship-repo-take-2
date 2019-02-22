@@ -201,8 +201,6 @@ public class ToolsFragment extends AbstractFragment implements ViewForMT, ViewWi
         getLoaderManager().destroyLoader(LOADER_ID);
     }
 
-
-
     @Override
     public void runService(int size) {
         serviceRouter.startService(size);

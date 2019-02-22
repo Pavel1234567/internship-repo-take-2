@@ -38,6 +38,8 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
     public static final int ASYNC_TASK_LOADER = 2;
     public static final int INTENT_SERVICE = 3;
 
+    private String unreceivedText = "";
+
     private static MultithreadingPresenter presenter;
     private MultithreadingPresenter(){}
 
@@ -153,9 +155,9 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
         thread = new Thread(() -> {
             try {
                 List<Double> list = DummyServer.getDummyServer().getDummyData(size);
-                String rez = MultithreadingPresenter.getPresenter().handleData(list);
+                String result = MultithreadingPresenter.getPresenter().handleData(list);
                 removeCallbacks = () -> {
-                    setData(rez);
+                    setText(result);
                 };
                 handler.post(removeCallbacks);
             } catch (Exception e) {
@@ -180,13 +182,19 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
     @Override
     public void onCreate(ViewForMT viewForMT) {
         this.viewForMT = viewForMT;
+        if (!unreceivedText.isEmpty()){
+            viewForMT.setText(unreceivedText);
+            unreceivedText = "";
+        }
         Log.d("myLogs", "onCreate");
     }
 
     @Override
-    public void setData(String string) {
+    public void setText(String string) {
         if (viewForMT != null) {
             viewForMT.setText(string);
+        }else {
+            unreceivedText = string;
         }
     }
 
@@ -213,7 +221,7 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
         @Override
         protected void onPostExecute(List<Double> list) {
             super.onPostExecute(list);
-            presenter.setData(MultithreadingPresenter.getPresenter().handleData(list));
+            presenter.setText(MultithreadingPresenter.getPresenter().handleData(list));
         }
 
         @Override
