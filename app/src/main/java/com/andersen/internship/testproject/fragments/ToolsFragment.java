@@ -153,14 +153,14 @@ public class ToolsFragment extends AbstractFragment implements ViewForMT, ViewWi
 
     //ViewForMT
     @Override
-    public void showDownloadStatus(String message) {
+    public void showMessage(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public void setText(String s) {
         outputData.setText(s);
-        showDownloadStatus(getString(R.string.finish_load));
+        showMessage(getString(R.string.finish_load));
     }
 
     @Override

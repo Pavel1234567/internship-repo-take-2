@@ -29,6 +29,7 @@
         android:inputType="number"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/spinner"
+        android:hint="@string/enter_list_size"
         />
 
 
