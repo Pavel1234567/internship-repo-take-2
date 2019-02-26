@@ -5,7 +5,6 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.andersen.internship.testproject.App;
-import com.andersen.internship.testproject.NotificationManagerHelper;
 import com.andersen.internship.testproject.R;
 import com.andersen.internship.testproject.models.DummyServer;
 import com.andersen.internship.testproject.mvp.multithreading.Presenter;
@@ -33,7 +32,6 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
 
     private boolean isRunning = false;
 
-
     public static final int HANDLER = 0;
     public static final int ASYNC_TASK = 1;
     public static final int ASYNC_TASK_LOADER = 2;
@@ -46,7 +44,6 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
 
     private static final String intMatcher = "([0-9]|[1-8][0-9]|9[0-9]|[1-8][0-9]{2}|9[0-8][0-9]|99[0-9]|[1-8][0-9]{3}|9[0-8][0-9]{2}|99[0-8][0-9]|999[0-9]|[1-8][0-9]{4}|9[0-8][0-9]{3}|99[0-8][0-9]{2}|999[0-8][0-9]|9999[0-9]|[1-8][0-9]{5}|9[0-8][0-9]{4}|99[0-8][0-9]{3}|999[0-8][0-9]{2}|9999[0-8][0-9]|99999[0-9]|[1-8][0-9]{6}|9[0-8][0-9]{5}|99[0-8][0-9]{4}|999[0-8][0-9]{3}|9999[0-8][0-9]{2}|99999[0-8][0-9]|999999[0-9]|[1-8][0-9]{7}|9[0-8][0-9]{6}|99[0-8][0-9]{5}|999[0-8][0-9]{4}|9999[0-8][0-9]{3}|99999[0-8][0-9]{2}|999999[0-8][0-9]|9999999[0-9]|[1-8][0-9]{8}|9[0-8][0-9]{7}|99[0-8][0-9]{6}|999[0-8][0-9]{5}|9999[0-8][0-9]{4}|99999[0-8][0-9]{3}|999999[0-8][0-9]{2}|9999999[0-8][0-9]|99999999[0-9]|1[0-9]{9}|20[0-9]{8}|21[0-3][0-9]{7}|214[0-6][0-9]{6}|2147[0-3][0-9]{5}|21474[0-7][0-9]{4}|214748[0-2][0-9]{3}|2147483[0-5][0-9]{2}|21474836[0-3][0-9]|214748364[0-7])";
 
-    private NotificationManagerHelper notificationManagerHelper = new NotificationManagerHelper();
 
     public static synchronized MultithreadingPresenter getPresenter(){
         if (presenter == null){
@@ -63,13 +60,9 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
                     if (viewForMT != null){
                         viewForMT.setProgress(integer);
                     }
-                    notificationManagerHelper.showProgress(integer);
                 },
                         e -> isRunning = false,
-                        () -> {
-                            isRunning = false;
-                            notificationManagerHelper.showNotification(App.getContext().getString(R.string.finish_load));
-                        }
+                        () -> isRunning = false
                 );
     }
 
@@ -194,7 +187,9 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
     }
 
     private void showMessageToView(int resID){
-        viewForMT.showMessage(App.getContext().getResources().getString(resID));
+        if (viewForMT != null) {
+            viewForMT.showMessage(App.getContext().getResources().getString(resID));
+        }
 
     }
 

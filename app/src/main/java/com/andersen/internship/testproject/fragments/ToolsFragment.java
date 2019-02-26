@@ -127,14 +127,6 @@ public class ToolsFragment extends AbstractFragment implements ViewForMT, ViewWi
         presenter.onStop();
     }
 
-    @Override
-    public void onDestroy() {
-        Log.d("myLogs", "onDestroy frag");
-
-        super.onDestroy();
-    }
-
-
     private void setOnClickListeners() {
         start.setOnClickListener(view -> startClick());
         stop.setOnClickListener(view -> stopClick());
