@@ -6,6 +6,10 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.andersen.internship.testproject.R;
 
+import static android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK;
+import static android.content.Intent.FLAG_ACTIVITY_NEW_TASK;
+import static android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override
@@ -18,7 +22,8 @@ public class MainActivity extends AppCompatActivity {
         else {
             intent = new Intent(this, MobileActivity.class);
         }
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(FLAG_ACTIVITY_NEW_TASK | FLAG_ACTIVITY_CLEAR_TASK | FLAG_ACTIVITY_SINGLE_TOP);
+
         startActivity(intent);
 
     }
