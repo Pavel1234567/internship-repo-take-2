@@ -62,11 +62,14 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
 
                     if (viewForMT != null){
                         viewForMT.setProgress(integer);
-
                     }
+                    notificationManagerHelper.showProgress(integer);
                 },
                         e -> isRunning = false,
-                        () -> isRunning = false
+                        () -> {
+                            isRunning = false;
+                            notificationManagerHelper.showNotification(App.getContext().getString(R.string.finish_load));
+                        }
                 );
     }
 

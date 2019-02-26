@@ -22,8 +22,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.MobileActivity" />
-        <activity android:name=".activities.TabletActivity" />
+
+        <activity android:name=".activities.MobileActivity"
+            android:launchMode="singleTop"/>
+
+        <activity android:name=".activities.TabletActivity"
+            android:launchMode="singleTop"/>
     </application>
 
 </manifest>
