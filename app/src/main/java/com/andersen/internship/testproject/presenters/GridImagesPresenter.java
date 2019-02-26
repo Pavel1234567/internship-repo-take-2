@@ -1,14 +1,14 @@
-package com.andersen.internship.testproject;
+package com.andersen.internship.testproject.presenters;
 
 import android.arch.lifecycle.Lifecycle;
 import android.arch.lifecycle.OnLifecycleEvent;
-import android.util.Log;
 
+import com.andersen.internship.testproject.IMAGES_TYPES;
 import com.andersen.internship.testproject.data.Child;
 import com.andersen.internship.testproject.data.Post;
-import com.andersen.internship.testproject.mvp.Model;
-import com.andersen.internship.testproject.mvp.Presenter;
-import com.andersen.internship.testproject.mvp.View;
+import com.andersen.internship.testproject.mvp.reddit.Model;
+import com.andersen.internship.testproject.mvp.reddit.Presenter;
+import com.andersen.internship.testproject.mvp.reddit.ViewForReddit;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -20,20 +20,20 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.functions.Function;
 import io.reactivex.schedulers.Schedulers;
 
-import static com.andersen.internship.testproject.GridImagesModel.getModel;
+import static com.andersen.internship.testproject.models.GridImagesModel.getModel;
 
 public class GridImagesPresenter implements Presenter {
 
     public static final String IMAGE = "image";
 
-    private View view;
+    private ViewForReddit viewForReddit;
     private Model model;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     private Flowable<Integer> progressImitation;
 
-    public GridImagesPresenter(View view) {
-        this.view = view;
+    public GridImagesPresenter(ViewForReddit viewForReddit) {
+        this.viewForReddit = viewForReddit;
         model = getModel();
 
         progressImitation = Flowable
@@ -47,7 +47,7 @@ public class GridImagesPresenter implements Presenter {
 
     @Override
     public void loadImages(IMAGES_TYPES imagesType) {
-        view.showProgress();
+        viewForReddit.showProgress();
         if (compositeDisposable.size() > 0){
             compositeDisposable.dispose();
             compositeDisposable = new CompositeDisposable();
@@ -58,8 +58,10 @@ public class GridImagesPresenter implements Presenter {
                     for (int i = 0; i < list.size(); ) {
                         
                         String postHint = list.get(i).getData().getPostHint();
-                        if (postHint == null || !postHint.equals(IMAGE))
+                        if (postHint == null || !postHint.equals(IMAGE)){
                             list.remove(i);
+                        }
+
                         else i++;
                     }
                     return list;
@@ -67,11 +69,11 @@ public class GridImagesPresenter implements Presenter {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
-                        list -> view.showContent(list),
+                        list -> viewForReddit.showContent(list),
 
                         e -> {
-                            view.hideProgress();
-                            view.showError(e.getMessage());
+                            viewForReddit.hideProgress();
+                            viewForReddit.showError(e.getMessage());
                         },
 
                         () -> {
@@ -79,12 +81,12 @@ public class GridImagesPresenter implements Presenter {
                                     .subscribeOn(Schedulers.io())
                                     .observeOn(AndroidSchedulers.mainThread())
                                     .subscribe(
-                                            i -> view.setProgress(i),
+                                            i -> viewForReddit.setProgress(i),
                                             e -> {
-                                                view.showError(e.getMessage());
-                                                view.hideProgress();
+                                                viewForReddit.showError(e.getMessage());
+                                                viewForReddit.hideProgress();
                                             },
-                                            () -> view.hideProgress()
+                                            () -> viewForReddit.hideProgress()
                                     );
 
                             compositeDisposable.add(progressImitationDisposable);
@@ -96,6 +98,6 @@ public class GridImagesPresenter implements Presenter {
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
     private void onDisconnect() {
         compositeDisposable.dispose();
-        view = null;
+        viewForReddit = null;
     }
 }

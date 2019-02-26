@@ -1,7 +1,8 @@
-package com.andersen.internship.testproject;
+package com.andersen.internship.testproject.routers;
 
 import android.support.v7.app.AppCompatActivity;
 
+import com.andersen.internship.testproject.R;
 import com.andersen.internship.testproject.fragments.AbstractFragment;
 import com.andersen.internship.testproject.fragments.CameraFragment;
 import com.andersen.internship.testproject.fragments.GalleryFragment;

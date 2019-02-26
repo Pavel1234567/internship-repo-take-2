@@ -5,7 +5,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
-import com.andersen.internship.testproject.FragmentRouter;
+import com.andersen.internship.testproject.routers.FragmentRouter;
 import com.andersen.internship.testproject.R;
 
 import butterknife.BindView;
@@ -28,7 +28,6 @@ public abstract class AbstractDeviceTypeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         router = new FragmentRouter(this);
         setTitle(title);
-
     }
 
     void initToolbar(){
