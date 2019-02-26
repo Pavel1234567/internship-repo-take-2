@@ -1,4 +1,4 @@
-package com.andersen.internship.testproject.mvp;
+package com.andersen.internship.testproject.mvp.reddit;
 
 import android.arch.lifecycle.LifecycleObserver;
 

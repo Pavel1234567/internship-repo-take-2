@@ -19,4 +19,21 @@
     <string name="new_posts">New</string>
     <string name="top">Top</string>
     <string name="change_view">изменить вид</string>
+
+    <string name="start">Старт</string>
+    <string name="stop">Стоп</string>
+    <string name="finish_load">конец загрузки</string>
+    <string name="start_load">начало загрузки</string>
+    <string name="clear">очистить</string>
+    <string name="enter_list_size">введите размер списка</string>
+    <string-array name="multithreading_items">
+        <item>Handler</item>
+        <item>AsyncTask</item>
+        <item>AsyncTaskLoader</item>
+        <item>IntentService</item>
+    </string-array>
+
+    <string name="enter_number">введите число</string>
+    <string name="too_long_number">слишком большое число</string>
+
 </resources>
