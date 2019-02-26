@@ -23,13 +23,9 @@ public class MyIntentService extends IntentService {
 
     public static final int DATA = 1;
 
-    private ServiceBinding binder = new ServiceBinding();
+    private boolean isLoaded = false;
 
-    public void setStopped(boolean stopped) {
-        isStopped = stopped;
-    }
-
-    private boolean isStopped = false;
+    private String result;
 
     public MyIntentService() {
         super("myname");
@@ -40,27 +36,19 @@ public class MyIntentService extends IntentService {
 
         int size = intent.getIntExtra(SIZE, 0);
         List<Double> list = DummyServer.getDummyServer().getDummyData(size);
-        String result = MultithreadingPresenter.getPresenter().handleData(list);
-        if (isStopped) return;
-        Intent intentGiveBack = new Intent(BROADCAST_ACTION);
-        intentGiveBack.putExtra(RECEIVED_TYPE, DATA);
-        intentGiveBack.putExtra(MESSAGE, result);
-        sendBroadcast(intentGiveBack);
+        result = MultithreadingPresenter.getPresenter().handleData(list);
+        isLoaded = true;
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.d("myLogs", "onDestroy");
-    }
 
-    public IBinder onBind(Intent arg0) {
-        return binder;
-    }
-
-    public class ServiceBinding extends Binder {
-        public MyIntentService getService() {
-            return MyIntentService.this;
+        if (isLoaded){
+            Intent intentGiveBack = new Intent(BROADCAST_ACTION);
+            intentGiveBack.putExtra(RECEIVED_TYPE, DATA);
+            intentGiveBack.putExtra(MESSAGE, result);
+            sendBroadcast(intentGiveBack);
         }
     }
 }
