@@ -46,11 +46,6 @@ public class MobileActivity extends AbstractDeviceTypeActivity
                 Snackbar.make(view, R.string.hello, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show());
 
-        String action = getIntent().getAction();
-
-        if (action != null && action.equals(OPEN_FOREGROUND_SERVICE_FRAGMENT)){
-            router.openForegroundServiceFragment();
-        }
     }
 
     @Override

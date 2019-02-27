@@ -12,6 +12,8 @@ import com.andersen.internship.testproject.R;
 
 import butterknife.BindView;
 
+import static com.andersen.internship.testproject.NotificationManagerHelper.OPEN_FOREGROUND_SERVICE_FRAGMENT;
+
 public abstract class AbstractDeviceTypeActivity extends AppCompatActivity {
 
     FragmentRouter router;
@@ -30,6 +32,16 @@ public abstract class AbstractDeviceTypeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         router = new FragmentRouter(this);
         setTitle(title);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        String action = getIntent().getAction();
+
+        if (action != null && action.equals(OPEN_FOREGROUND_SERVICE_FRAGMENT)){
+            router.openForegroundServiceFragment();
+        }
     }
 
     void initToolbar(){

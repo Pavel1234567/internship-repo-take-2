@@ -22,8 +22,7 @@ public class MainActivity extends AppCompatActivity {
             intent = new Intent(this, MobileActivity.class);
         }
 
-        //TODO: сделать нормальный коммент
-        //если активити была открыта через status bar
+        //если приложение было открыто через status bar, то сказать следующей активити открыть фаргмент, который запустил фореграунд сервис
         intent.setAction(getIntent().getAction());
 
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
