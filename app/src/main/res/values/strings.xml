@@ -35,5 +35,6 @@
 
     <string name="enter_number">введите число</string>
     <string name="too_long_number">слишком большое число</string>
+    <string name="service">Сервис</string>
 
 </resources>

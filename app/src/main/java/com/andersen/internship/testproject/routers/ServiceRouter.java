@@ -1,13 +1,11 @@
 package com.andersen.internship.testproject.routers;
 
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
-import android.os.IBinder;
 import android.util.Log;
 
-import com.andersen.internship.testproject.MyIntentService;
+import com.andersen.internship.testproject.services.ForegroundService;
+import com.andersen.internship.testproject.services.MyIntentService;
 
 import java.lang.ref.WeakReference;
 
@@ -16,23 +14,26 @@ import static com.andersen.internship.testproject.MyAsyncLoader.SIZE;
 public class ServiceRouter {
 
     private WeakReference<Context> weakReference;
-    private Intent intent;
-
+    private Intent intentForIntentService;
 
     public ServiceRouter(Context context) {
         weakReference = new WeakReference<>(context);
-        intent = new Intent(context, MyIntentService.class);
+        intentForIntentService = new Intent(context, MyIntentService.class);
     }
 
-    public void startService(int size){
+    public void startIntentService(int size){
+
         Context context = weakReference.get();
-
-        intent.putExtra(SIZE, size);
-        context.startService(intent);
+        intentForIntentService.putExtra(SIZE, size);
+        context.startService(intentForIntentService);
     }
 
-    public void stopService(){
-        weakReference.get().stopService(intent);
-        Log.d("myLogs", "stopService");
+    public void stopIntentService(){
+        weakReference.get().stopService(intentForIntentService);
+    }
+
+    public void startFregroundService(){
+        Context context = weakReference.get();
+        context.startService(new Intent(context, ForegroundService.class));
     }
 }

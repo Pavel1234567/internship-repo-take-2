@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import com.andersen.internship.testproject.R;
 import com.andersen.internship.testproject.fragments.AbstractFragment;
 import com.andersen.internship.testproject.fragments.CameraFragment;
+import com.andersen.internship.testproject.fragments.ForegroundServiceFragment;
 import com.andersen.internship.testproject.fragments.GalleryFragment;
 import com.andersen.internship.testproject.fragments.SlideshowFragment;
 import com.andersen.internship.testproject.fragments.ToolsFragment;
@@ -30,8 +31,13 @@ public class FragmentRouter {
     public void openSlideshowFragment(){
         startNewFragment(new SlideshowFragment());
     }
+
     public void openToolsFragment(){
         startNewFragment(new ToolsFragment());
+    }
+
+    public void openForegroundServiceFragment(){
+        startNewFragment(new ForegroundServiceFragment());
     }
 
     private void startNewFragment(AbstractFragment fragment){
