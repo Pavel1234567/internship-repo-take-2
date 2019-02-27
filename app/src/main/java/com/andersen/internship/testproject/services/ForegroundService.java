@@ -2,9 +2,9 @@ package com.andersen.internship.testproject.services;
 
 import android.app.IntentService;
 import android.content.Intent;
-import android.content.Context;
 
 import com.andersen.internship.testproject.NotificationManagerHelper;
+import com.andersen.internship.testproject.R;
 
 public class ForegroundService extends IntentService {
 
@@ -27,7 +27,7 @@ public class ForegroundService extends IntentService {
         for (int i = 0; i < 100; i++){
 
             try {
-                Thread.sleep(200);
+                Thread.sleep(75);
 
                 progressReport.putExtra(CURRENT_PROGRESS, i);
                 sendBroadcast(progressReport);
@@ -36,13 +36,9 @@ public class ForegroundService extends IntentService {
                 e.printStackTrace();
             }
         }
-        progressReport.putExtra(DOWNLOAD_FINISHED, "finished");
-        notificationManagerHelper.showNotification("finished");
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        notificationManagerHelper.closeAllNotifications();
+        stopForeground(true);
+        String finishLoad = getResources().getString(R.string.finish_load);
+        progressReport.putExtra(DOWNLOAD_FINISHED, finishLoad);
+        notificationManagerHelper.showMessage(finishLoad);
     }
 }

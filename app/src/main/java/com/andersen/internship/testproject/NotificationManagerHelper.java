@@ -6,7 +6,6 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
 
 import com.andersen.internship.testproject.activities.MainActivity;
 
@@ -14,7 +13,8 @@ import static android.content.Context.NOTIFICATION_SERVICE;
 
 public class NotificationManagerHelper {
 
-    private static final int NOTIFICATION_ID = 1;
+    private static final int ID_PROGRESS_NOTIFICATION = 1;
+    private static final int ID_FOR_NOTIFICATION_WITH_MESSAGE = 2;
     private static final int MAX = 100;
     public static final String OPEN_FOREGROUND_SERVICE_FRAGMENT = "OPEN_FOREGROUND_SERVICE_FRAGMENT";
 
@@ -41,15 +41,15 @@ public class NotificationManagerHelper {
                 .setContentIntent(resultPendingIntent);
     }
 
-    public void showNotification(String text) {
+    public void showMessage(String text) {
 
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context)
-                .setSmallIcon(R.drawable.ic_menu_tools)
+                .setSmallIcon(R.drawable.ic_arrow_downward_black_24dp)
                 .setContentTitle(text)
                 .setAutoCancel(true)
                 .setContentIntent(resultPendingIntent);
 
-        manager.notify(NOTIFICATION_ID, builder.build());
+        manager.notify(ID_FOR_NOTIFICATION_WITH_MESSAGE, builder.build());
     }
 
     public void showProgress(int progress) {
@@ -59,14 +59,10 @@ public class NotificationManagerHelper {
                 .setContentText(progress + " of " + MAX)
                 .setOngoing(true);
 
-        manager.notify(NOTIFICATION_ID, progressNotificationBuilder.build());
+        manager.notify(ID_PROGRESS_NOTIFICATION, progressNotificationBuilder.build());
     }
 
     public Notification getProgressBarForForegroundService() {
         return progressNotificationBuilder.build();
-    }
-
-    public void closeAllNotifications(){
-        manager.cancelAll();
     }
 }
