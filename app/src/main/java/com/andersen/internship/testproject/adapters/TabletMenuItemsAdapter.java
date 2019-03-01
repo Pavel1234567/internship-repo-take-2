@@ -37,7 +37,7 @@ public class TabletMenuItemsAdapter extends RecyclerView.Adapter<TabletMenuItems
             add(R.drawable.ic_menu_gallery);
             add(R.drawable.ic_menu_slideshow);
             add(R.drawable.ic_menu_tools);
-            add(R.drawable.ic_arrow_downward_black_24dp);
+            add(R.drawable.ic_arrow_downward);
         }};
     }
 

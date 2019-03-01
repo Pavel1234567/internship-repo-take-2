@@ -2,6 +2,7 @@ package com.andersen.internship.testproject.routers;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 import com.andersen.internship.testproject.services.ForegroundService;
@@ -34,6 +35,12 @@ public class ServiceRouter {
 
     public void startFregroundService(){
         Context context = weakReference.get();
-        context.startService(new Intent(context, ForegroundService.class));
+        Intent intent = new Intent(context, ForegroundService.class);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            context.startForegroundService(intent);
+        }else {
+            context.startService(intent);
+
+        }
     }
 }

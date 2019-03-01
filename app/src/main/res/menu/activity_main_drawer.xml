@@ -24,7 +24,7 @@
         <item
             android:id="@+id/foreground_service"
             android:title="@string/service"
-            android:icon="@drawable/ic_arrow_downward_black_24dp"
+            android:icon="@drawable/ic_arrow_downward"
             />
     </group>
 
