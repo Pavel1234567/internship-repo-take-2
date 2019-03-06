@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.andersen.internship.testproject.MyAsyncLoader;
 import com.andersen.internship.testproject.R;
 import com.andersen.internship.testproject.mvp.multithreading.Presenter;
-import com.andersen.internship.testproject.mvp.multithreading.ViewForMT;
+import com.andersen.internship.testproject.mvp.multithreading.ViewForMultiThreading;
 import com.andersen.internship.testproject.mvp.multithreading.ViewWithAsyncLoader;
 import com.andersen.internship.testproject.mvp.multithreading.ViewWithService;
 import com.andersen.internship.testproject.presenters.MultithreadingPresenter;
@@ -37,7 +37,7 @@ import static com.andersen.internship.testproject.services.MyIntentService.DATA;
 import static com.andersen.internship.testproject.services.MyIntentService.MESSAGE;
 import static com.andersen.internship.testproject.services.MyIntentService.RECEIVED_TYPE;
 
-public class ToolsFragment extends AbstractFragment implements ViewForMT, ViewWithAsyncLoader, ViewWithService {
+public class ToolsFragment extends AbstractFragment implements ViewForMultiThreading, ViewWithAsyncLoader, ViewWithService {
 
     @BindView(R.id.spinner)
     Spinner spinner;
@@ -145,7 +145,7 @@ public class ToolsFragment extends AbstractFragment implements ViewForMT, ViewWi
         presenter.stopLoading();
     }
 
-    //ViewForMT
+    //ViewForMultiThreading
     @Override
     public void showMessage(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
