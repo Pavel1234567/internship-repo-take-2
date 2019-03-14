@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +21,7 @@ import android.widget.Toast;
 import com.andersen.internship.testproject.MyAsyncLoader;
 import com.andersen.internship.testproject.R;
 import com.andersen.internship.testproject.mvp.multithreading.Presenter;
-import com.andersen.internship.testproject.mvp.multithreading.ViewForMT;
+import com.andersen.internship.testproject.mvp.multithreading.ViewForMultiThreading;
 import com.andersen.internship.testproject.mvp.multithreading.ViewWithAsyncLoader;
 import com.andersen.internship.testproject.mvp.multithreading.ViewWithService;
 import com.andersen.internship.testproject.presenters.MultithreadingPresenter;
@@ -33,12 +32,12 @@ import butterknife.ButterKnife;
 
 import static com.andersen.internship.testproject.MyAsyncLoader.LOADER_ID;
 import static com.andersen.internship.testproject.MyAsyncLoader.SIZE;
-import static com.andersen.internship.testproject.MyIntentService.BROADCAST_ACTION;
-import static com.andersen.internship.testproject.MyIntentService.DATA;
-import static com.andersen.internship.testproject.MyIntentService.MESSAGE;
-import static com.andersen.internship.testproject.MyIntentService.RECEIVED_TYPE;
+import static com.andersen.internship.testproject.services.MyIntentService.BROADCAST_ACTION;
+import static com.andersen.internship.testproject.services.MyIntentService.DATA;
+import static com.andersen.internship.testproject.services.MyIntentService.MESSAGE;
+import static com.andersen.internship.testproject.services.MyIntentService.RECEIVED_TYPE;
 
-public class ToolsFragment extends AbstractFragment implements ViewForMT, ViewWithAsyncLoader, ViewWithService {
+public class ToolsFragment extends AbstractFragment implements ViewForMultiThreading, ViewWithAsyncLoader, ViewWithService {
 
     @BindView(R.id.spinner)
     Spinner spinner;
@@ -79,15 +78,16 @@ public class ToolsFragment extends AbstractFragment implements ViewForMT, ViewWi
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_tools, container, false);
         unbinder = ButterKnife.bind(this, rootView);
-
         presenter.onCreate(this);
         return rootView;
     }
 
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+
         super.onViewCreated(view, savedInstanceState);
         setOnClickListeners();
 
@@ -101,7 +101,6 @@ public class ToolsFragment extends AbstractFragment implements ViewForMT, ViewWi
                 if (type == DATA){
                     String result = intent.getStringExtra(MESSAGE);
                     setText(result);
-
                 }
             }
         };
@@ -110,6 +109,7 @@ public class ToolsFragment extends AbstractFragment implements ViewForMT, ViewWi
 
     @Override
     public void onResume() {
+
         super.onResume();
         IntentFilter intFilt = new IntentFilter(BROADCAST_ACTION);
         getActivity().registerReceiver(broadcastReceiver, intFilt);
@@ -127,21 +127,15 @@ public class ToolsFragment extends AbstractFragment implements ViewForMT, ViewWi
         presenter.onStop();
     }
 
-    @Override
-    public void onDestroy() {
-        Log.d("myLogs", "onDestroy frag");
-
-        super.onDestroy();
-    }
-
-
     private void setOnClickListeners() {
+
         start.setOnClickListener(view -> startClick());
         stop.setOnClickListener(view -> stopClick());
         clear.setOnClickListener(view -> outputData.setText(""));
     }
 
     private void startClick() {
+
         String type = spinner.getSelectedItem().toString();
         String arg = inputSize.getEditableText().toString();
         presenter.load(type, arg);
@@ -151,7 +145,7 @@ public class ToolsFragment extends AbstractFragment implements ViewForMT, ViewWi
         presenter.stopLoading();
     }
 
-    //ViewForMT
+    //ViewForMultiThreading
     @Override
     public void showMessage(String message) {
         Toast.makeText(getActivity(), message, Toast.LENGTH_SHORT).show();
@@ -203,11 +197,11 @@ public class ToolsFragment extends AbstractFragment implements ViewForMT, ViewWi
 
     @Override
     public void runService(int size) {
-        serviceRouter.startService(size);
+        serviceRouter.startIntentService(size);
     }
 
     @Override
     public void stopService() {
-        serviceRouter.stopService();
+        serviceRouter.stopIntentService();
     }
 }

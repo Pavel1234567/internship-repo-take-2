@@ -7,6 +7,7 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -15,9 +16,10 @@ import com.andersen.internship.testproject.R;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import static com.andersen.internship.testproject.NotificationManagerHelper.OPEN_FOREGROUND_SERVICE_FRAGMENT;
+
 public class MobileActivity extends AbstractDeviceTypeActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
 
     @BindView(R.id.nav_view)
     NavigationView navigationView;
@@ -33,20 +35,17 @@ public class MobileActivity extends AbstractDeviceTypeActivity
         setContentView(R.layout.activity_main);
 
         ButterKnife.bind(this);
-
         initToolbar();
-
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.setDrawerListener(toggle);
-
         toggle.syncState();
-
         navigationView.setNavigationItemSelectedListener(this);
 
         fab.setOnClickListener(view ->
                 Snackbar.make(view, R.string.hello, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show());
+
     }
 
     @Override
@@ -57,7 +56,6 @@ public class MobileActivity extends AbstractDeviceTypeActivity
             super.onBackPressed();
         }
     }
-
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -81,10 +79,12 @@ public class MobileActivity extends AbstractDeviceTypeActivity
                 router.openToolsFragment();
                 break;
 
+            case R.id.foreground_service:
+                router.openForegroundServiceFragment();
+                break;
         }
 
         drawer.closeDrawer(GravityCompat.START);
         return true;
     }
-
 }

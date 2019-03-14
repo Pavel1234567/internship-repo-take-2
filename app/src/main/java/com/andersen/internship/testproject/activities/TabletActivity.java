@@ -20,9 +20,6 @@ public class TabletActivity extends AbstractDeviceTypeActivity {
     private TabletMenuItemsAdapter adapter;
     public static final String POSITION = "POSITION";
 
-
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         title = getResources().getString(R.string.tablet_edition);
@@ -38,7 +35,6 @@ public class TabletActivity extends AbstractDeviceTypeActivity {
 
         recyclerView.addItemDecoration(
                 new DividerItemDecoration(this, R.drawable.divider));
-
 
         adapter = new TabletMenuItemsAdapter();
         if (savedInstanceState != null){
@@ -64,6 +60,9 @@ public class TabletActivity extends AbstractDeviceTypeActivity {
                     router.openToolsFragment();
                     break;
 
+                case 4:
+                    router.openForegroundServiceFragment();
+                    break;
             }
         });
         recyclerView.setAdapter(adapter);
@@ -71,8 +70,6 @@ public class TabletActivity extends AbstractDeviceTypeActivity {
         fab.setOnClickListener(view ->
                 Snackbar.make(view, R.string.hello, Snackbar.LENGTH_LONG)
                         .setAction("Action", null).show());
-
-
     }
 
     @Override

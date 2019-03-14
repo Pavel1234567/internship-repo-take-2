@@ -2,14 +2,13 @@ package com.andersen.internship.testproject.presenters;
 
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.util.Log;
 
 import com.andersen.internship.testproject.App;
 import com.andersen.internship.testproject.R;
 import com.andersen.internship.testproject.models.DummyServer;
 import com.andersen.internship.testproject.mvp.multithreading.Presenter;
 import com.andersen.internship.testproject.mvp.multithreading.PresenterWithAsyncTool;
-import com.andersen.internship.testproject.mvp.multithreading.ViewForMT;
+import com.andersen.internship.testproject.mvp.multithreading.ViewForMultiThreading;
 import com.andersen.internship.testproject.mvp.multithreading.ViewWithAsyncLoader;
 import com.andersen.internship.testproject.mvp.multithreading.ViewWithService;
 
@@ -20,7 +19,7 @@ import io.reactivex.disposables.Disposable;
 
 public class MultithreadingPresenter implements Presenter, PresenterWithAsyncTool {
 
-    private ViewForMT viewForMT;
+    private ViewForMultiThreading viewForMultiThreading;
     private String currentLoadType;
     private Disposable loadStatusDisposable;
     private List<String> listTypes = Arrays.asList(App.getContext().getResources().getStringArray(R.array.multithreading_items));
@@ -31,7 +30,6 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
     private Thread thread;
 
     private boolean isRunning = false;
-
 
     public static final int HANDLER = 0;
     public static final int ASYNC_TASK = 1;
@@ -58,9 +56,8 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
                 .observeProgress()
                 .subscribe(integer -> {
 
-                    if (viewForMT != null){
-                        viewForMT.setProgress(integer);
-
+                    if (viewForMultiThreading != null){
+                        viewForMultiThreading.setProgress(integer);
                     }
                 },
                         e -> isRunning = false,
@@ -88,6 +85,8 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
         int size = Integer.parseInt(arg);
 
         showMessageToView(R.string.start_load);
+
+
         if (isRunning){
             stopLoading();
         }
@@ -117,7 +116,7 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
 
         isRunning = false;
         deleteLoadStatusDisposable();
-        viewForMT.setProgress(0);
+        viewForMultiThreading.setProgress(0);
 
 
         if (currentLoadType.equals(listTypes.get(HANDLER))){
@@ -135,12 +134,12 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
     }
 
     private void stopIntentService() {
-        ViewWithService viewWithService = (ViewWithService) viewForMT;
+        ViewWithService viewWithService = (ViewWithService) viewForMultiThreading;
         viewWithService.stopService();
     }
 
     private void stopAyncLoader() {
-        ViewWithAsyncLoader viewWithAsyncLoader = (ViewWithAsyncLoader) viewForMT;
+        ViewWithAsyncLoader viewWithAsyncLoader = (ViewWithAsyncLoader) viewForMultiThreading;
         viewWithAsyncLoader.stopLoader();
     }
 
@@ -153,12 +152,12 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
     }
 
     private void runIntentService(int size) {
-        ViewWithService viewWithService = (ViewWithService) viewForMT;
+        ViewWithService viewWithService = (ViewWithService) viewForMultiThreading;
         viewWithService.runService(size);
     }
 
     private void runAyncLoader(int size) {
-        ViewWithAsyncLoader vieviewWithAsyncLoaderWAL = (ViewWithAsyncLoader) viewForMT;
+        ViewWithAsyncLoader vieviewWithAsyncLoaderWAL = (ViewWithAsyncLoader) viewForMultiThreading;
         vieviewWithAsyncLoaderWAL.runLoader(size);
     }
 
@@ -187,28 +186,30 @@ public class MultithreadingPresenter implements Presenter, PresenterWithAsyncToo
     }
 
     private void showMessageToView(int resID){
-        viewForMT.showMessage(App.getContext().getResources().getString(resID));
+        if (viewForMultiThreading != null) {
+            viewForMultiThreading.showMessage(App.getContext().getResources().getString(resID));
+        }
 
     }
 
     @Override
     public void onStop() {
-        viewForMT = null;
+        viewForMultiThreading = null;
     }
 
     @Override
-    public void onCreate(ViewForMT viewForMT) {
-        this.viewForMT = viewForMT;
+    public void onCreate(ViewForMultiThreading viewForMultiThreading) {
+        this.viewForMultiThreading = viewForMultiThreading;
         if (!unreceivedText.isEmpty()){
-            viewForMT.setText(unreceivedText);
+            viewForMultiThreading.setText(unreceivedText);
             unreceivedText = "";
         }
     }
 
     @Override
     public void setText(String string) {
-        if (viewForMT != null) {
-            viewForMT.setText(string);
+        if (viewForMultiThreading != null) {
+            viewForMultiThreading.setText(string);
         }else {
             unreceivedText = string;
         }

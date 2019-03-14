@@ -12,8 +12,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.NoActionBar">
-
-        <service android:name=".MyIntentService"/>
+        <service
+            android:name=".services.ForegroundService"
+            android:exported="false"></service>
+        <service android:name=".services.MyIntentService" />
 
         <activity android:name=".activities.MainActivity">
             <intent-filter>
@@ -22,8 +24,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activities.MobileActivity" />
-        <activity android:name=".activities.TabletActivity" />
+        <activity
+            android:name=".activities.MobileActivity"
+            android:launchMode="singleTop" />
+        <activity
+            android:name=".activities.TabletActivity"
+            android:launchMode="singleTop" />
     </application>
 
 </manifest>

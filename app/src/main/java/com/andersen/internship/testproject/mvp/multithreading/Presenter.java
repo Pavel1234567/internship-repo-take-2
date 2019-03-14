@@ -16,5 +16,5 @@ public interface Presenter {
     void load(String loadType, String arg);
     void stopLoading();
     void onStop();
-    void onCreate(ViewForMT viewForMT);
+    void onCreate(ViewForMultiThreading viewForMultiThreading);
 }

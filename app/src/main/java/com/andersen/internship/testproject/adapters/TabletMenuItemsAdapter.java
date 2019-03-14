@@ -20,9 +20,7 @@ public class TabletMenuItemsAdapter extends RecyclerView.Adapter<TabletMenuItems
     private List<Integer> menuItems;
     Listener listener;
 
-
     private int lastSelectedPosition = -1;
-
 
     public void setLastSelectedPosition(int lastSelectedPosition) {
         this.lastSelectedPosition = lastSelectedPosition;
@@ -39,6 +37,7 @@ public class TabletMenuItemsAdapter extends RecyclerView.Adapter<TabletMenuItems
             add(R.drawable.ic_menu_gallery);
             add(R.drawable.ic_menu_slideshow);
             add(R.drawable.ic_menu_tools);
+            add(R.drawable.ic_arrow_downward);
         }};
     }
 
@@ -82,13 +81,12 @@ public class TabletMenuItemsAdapter extends RecyclerView.Adapter<TabletMenuItems
 
     class ItemViewHolder extends RecyclerView.ViewHolder {
 
-
         @BindView(R.id.radio_button)
         RadioButton radioButton;
 
         public ItemViewHolder(View view) {
-            super(view);
 
+            super(view);
             ButterKnife.bind(this, view);
         }
     }
@@ -96,5 +94,4 @@ public class TabletMenuItemsAdapter extends RecyclerView.Adapter<TabletMenuItems
     public interface Listener{
         void onClick(int position);
     }
-
 }
